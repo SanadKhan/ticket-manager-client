@@ -1,0 +1,51 @@
+.user-container {
+    display: flex;
+}
+
+.user-item {
+    width: 50%;
+}
+
+.user-form-login {
+    width: 30%;
+    margin-top: 115px;
+    margin-left: 115px !important;
+}
+
+.user-form-register {
+    width: 30%;
+    margin-top: $l-size;
+    margin-left: 115px !important;
+}
+
+.user-form-image {
+    width: 80%;
+    margin-top: 115px;
+    margin-left: 130px !important;
+}
+
+.user-form-title {
+    font-size: $font-size-large;
+}
+
+.user-form-hr {
+    border: 1px solid lighten($color: #000000, $amount: 90%);
+    margin : $font-size-large 0;
+}
+
+.user-form-account-text {
+    font-size: 16px;
+    font-weight: bold;
+    color: #000000;
+}
+
+// .user-button {
+//     font-size: $s-size !important;
+//     height: 40px !important;
+//     text-align: center;
+//     display: inline-block;
+// }
+
+label {
+    font-size: 18px !important;
+}

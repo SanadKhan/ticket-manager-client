@@ -1,0 +1,30 @@
+.navbar-container {
+    display: flex;
+    background-color: #f8f9fa; 
+    padding: 3px;
+}
+
+.navbar-brand {
+    width: 13%;
+    margin-top: 8px;
+    margin-left: 8px;
+}
+
+.navbar-title {
+    text-decoration: none;
+    color: black;
+    font-size: 22px;
+    padding: 5px;
+}
+
+.navbar-menu {
+    width: 77%;
+}
+
+.navbar-menu-box {
+    font-size: 17px !important;
+    background-color: #f8f9fa !important;
+    border-bottom: none !important;
+}
+
+

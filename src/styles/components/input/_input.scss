@@ -1,0 +1,10 @@
+.input-field {
+    height: 45px !important;
+    font-size: $s-size !important;
+
+}
+
+::placeholder {
+    font-size: $s-size !important;
+    padding: 5px;
+}
