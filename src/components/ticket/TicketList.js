@@ -1,5 +1,5 @@
 import React from "react";
-import { Table } from 'antd';
+import { Table, Space } from 'antd';
 import { Link } from "react-router-dom";
 
 const { Column } = Table;
@@ -44,16 +44,10 @@ const TicketList = () => (
         className="table-column"
         title="Action"
         key="action"
-        // render={(text, record) => (
-        //   <Space size="middle">
-        //     <a>Invite</a>
-        //     <a>Delete</a>
-        //   </Space>
-        // )}
         render={ () => (
-          <div>
-            <Link to="/"> View </Link>
-          </div>
+          <Space size="small">
+            <Link to="/ticket/view/1" className="table-column"> View </Link>
+          </Space>
         )}
       />
     </Table>

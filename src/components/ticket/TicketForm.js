@@ -1,152 +1,152 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { Button, Form, Input, Select, Space, Upload, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import {
-    Form,
-    Input,
-    Tooltip,
-    Icon,
-    Cascader,
-    Select,
-    Row,
-    Col,
-    Checkbox,
-    Button,
-    AutoComplete,
-    Upload,
-    message
-  } from 'antd';
 
-const props = {
-  accept: "image/*",
-  name: 'ticket-image',
-  multiple: true,
-  // action: 'http://localhost:8080/ticket/add',
-  // headers: {
-  //   authorization: 'authorization-text',
-  // },
-  listType: "picture",
-  onChange(info) {
-    if (info.file.status !== 'uploading') {
-      console.log(info.file, info.fileList);
-    }
-    if (info.file.status === 'done') {
-      message.success(`${info.file.name} file uploaded successfully`);
-    } else if (info.file.status === 'error') {
-      message.error(`${info.file.name} file upload failed.`);
-    }
-  },
-};
-  
-const { Option } = Select;
-const AutoCompleteOption = AutoComplete.Option;
 const { TextArea } = Input;
 
-class TicketsForm extends React.Component {
-  state = {
-    confirmDirty: false,
-    autoCompleteResult: [],
-  };
+const handleChange = (value) => {
+  console.log(`selected ${value}`);
+};
 
-  handleSubmit = e => {
-    e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        console.log('Received values of form: ', values);
-      }
-    });
-  };
+const onFinish = (values) => {
+  console.log('Success:', values);
+};
 
-  handleConfirmBlur = e => {
-    const { value } = e.target;
-    this.setState({ confirmDirty: this.state.confirmDirty || !!value });
-  };
+const onFinishFailed = (errorInfo) => {
+  console.log('Failed:', errorInfo);
+};
 
-  compareToFirstPassword = (rule, value, callback) => {
-    const { form } = this.props;
-    if (value && value !== form.getFieldValue('password')) {
-      callback('Two passwords that you enter is inconsistent!');
-    } else {
-      callback();
-    }
-  };
-
-  validateToNextPassword = (rule, value, callback) => {
-    const { form } = this.props;
-    if (value && this.state.confirmDirty) {
-      form.validateFields(['confirm'], { force: true });
-    }
-    callback();
-  };
-
-  handleWebsiteChange = value => {
-    let autoCompleteResult;
-    if (!value) {
-      autoCompleteResult = [];
-    } else {
-      autoCompleteResult = ['.com', '.org', '.net'].map(domain => `${value}${domain}`);
-    }
-    this.setState({ autoCompleteResult });
-  };
-
-  render() {
-    const { getFieldDecorator } = this.props.form;
-    const { autoCompleteResult } = this.state;
-
-
-  //   const websiteOptions = autoCompleteResult.map(website => (
-  //     <AutoCompleteOption key={website}>{website}</AutoCompleteOption>
-  //   ));
-
-    return (
-      <Form onSubmit={this.handleSubmit} autoComplete="off">
-          <div className="user-container">
-              <div className="user-item user-form-register">
-                  <h3 className="user-form-title">Add Ticket</h3>
-                  <Form.Item label="Title" name="title">
-                      
-                    <Input 
-                    className="input-field"
-                    placeholder="Enter Title"/>
-                   
-                  </Form.Item>
-                  
-                  <Form.Item label="Description" name="descp">
-                      <TextArea rows={7} />
-                  </Form.Item>
-
-                  <Form.Item label="Assigned To">
-                    <Select size="large" name="assignedto">
-                      <Option value="andrew">Andrew</Option>
-                      <Option value="jess">Jess</Option>
-                      <Option value="jen">Jen</Option>
-                    </Select>
-                  </Form.Item>
-                  
-                  <Form.Item label="Ticket Image">
-                    <Upload {...props}>
-                      <Button size="large" icon={<UploadOutlined />}>Click to Upload</Button>
-                    </Upload>
-                  </Form.Item>
-
-                  <Form.Item >
-                      <Button type="primary" htmlType="submit" size="large">
-                      Save
-                      </Button>
-                  </Form.Item>
-              </div>
-          </div>
-      </Form>
-    );
+const fileProps = {
+  name: 'ticket-image',
+  accept: 'image/*',
+  multiple: true,
+  listType: "picture",
+  // onChange(info) {
+  //   if (info.file.status !== 'uploading') {
+  //     console.log(info.file, info.fileList);
+  //   }
+  //   if (info.file.status === 'done') {
+  //     message.success(`${info.file.name} file uploaded successfully`);
+  //   } else if (info.file.status === 'error') {
+  //     message.error(`${info.file.name} file upload failed.`);
+  //   }
+  // },
+  beforeUpload: () => {
+    return false
   }
 }
-  
-const TicketForm = Form.create({ name: 'ticket' })(TicketsForm);
-  
-// const TicketForm = () => (
-//     <div>
-//         <h1>Ticket Form</h1>
-//     </div>
-// );
+
+const TicketForm = () => (
+  <div className="user-container">
+      <div className="user-item user-form-ticket">
+        <Form
+          size="large"
+          layout="vertical"
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+          autoComplete="off"
+        >
+        <p style={{ fontSize: 24}}>Add Ticket</p>
+        <Form.Item
+          label="Title"
+          name="title"
+          rules={[
+            {
+              required: true,
+              message: 'Please input your title!',
+            },
+            {
+              validator: (_,value) => {
+                if(value){
+                  if(value.length >= 3) {
+                    return Promise.resolve();
+                  }
+                } 
+                return Promise.reject(
+                  new Error("Must be atleast three chars")
+                )
+              },
+            }
+          ]}
+        >
+          <Input placeholder="Enter Title"/>
+        </Form.Item>
+
+        <Form.Item
+          label="Description"
+          name="description"
+          rules={[
+            {
+              required: true,
+              message: 'Please input your description!',
+            },
+            {
+              validator: (_,value) => {
+                if(value){
+                  if(value.length >= 3) {
+                    return Promise.resolve();
+                  }
+                } 
+                return Promise.reject(
+                  new Error("Must be atleast three chars")
+                )
+              },
+            }
+          ]}
+        >
+          <TextArea rows={10}/>
+        </Form.Item>
+        
+        <Form.Item
+          label="Assgined To" 
+          >
+          <Select name="assignedto" onChange={handleChange}>
+            <Select.Option value="andrew">Andrew</Select.Option>
+          </Select>
+          {/* <Space wrap>
+            <Select
+              defaultValue="lucy"
+              style={{
+                width: 120,
+              }}
+              onChange={handleChange}
+              options={[
+                {
+                  value: 'jack',
+                  label: 'Jack',
+                },
+                {
+                  value: 'lucy',
+                  label: 'Lucy',
+                },
+                {
+                  value: 'Yiminghe',
+                  label: 'yiminghe',
+                }
+              ]}
+            />
+          </Space> */}
+        </Form.Item>
+        <Form.Item 
+          label="Ticket Image">
+        <Upload {...fileProps}>
+          <Button icon={<UploadOutlined />}>Click to Upload</Button>
+        </Upload>
+        </Form.Item>
+        <Form.Item
+          wrapperCol={{
+            offset: 8,
+            span: 16,
+          }}
+        >
+          <Button type="primary" htmlType="submit">
+            Save
+          </Button>
+        </Form.Item>
+        </Form>
+    </div>
+  </div>
+);
 
 export default TicketForm;

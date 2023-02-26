@@ -5,10 +5,31 @@
 .table-column {
     font-size: 16px;
     color:  #212529;
-    
 }
 
-span.ant-table-column-title {
-    color: #212529;
-    font-weight: bold;
+.table-column:hover {
+    color:  #212529;
 }
+
+.table-edit {
+    color: #1677ff;
+}
+
+.table-edit:hover {
+    color: #1677ff;
+}
+
+.table-delete {
+    color: red;
+}
+
+.table-delete:hover {
+    color: red;
+}
+
+// span.ant-table-column-title {
+//     color: #212529;
+//     font-weight: bold;
+//     font-style: italic;
+//     // font-size: 19px !important;
+// }

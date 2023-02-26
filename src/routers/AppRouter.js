@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter, Router, Route, Switch } from "react-router-dom";
 import { Header } from "../components/partials";
 import { Login, Register } from "../components/user";
-import { MyAssignedTicket, MyCreatedTicket, TicketList, TicketForm } from "../components/ticket";
+import { MyAssignedTicket, MyCreatedTicket, TicketList, TicketForm, TicketView } from "../components/ticket";
 import { NotFoundPage } from "../components/common";
 import history from "../history";
 
@@ -18,7 +18,7 @@ const AppRouter = () => (
                 <Route path="/mycreatedtickets" component={MyCreatedTicket} />
                 <Route path="/ticket/add" component={TicketForm} />
                 <Route path="/ticket/edit/:id" component={TicketForm} />
-                <Route path="/ticket/view/:id" component={TicketList} />
+                <Route path="/ticket/view/:id" component={TicketView} />
                 <Route component={NotFoundPage} />
             </Switch>
         </div>

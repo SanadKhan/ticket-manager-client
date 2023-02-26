@@ -1,8 +1,8 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import "normalize.css/normalize.css";
 import './styles/styles.scss';
-import 'antd/dist/antd.css';
+// import 'antd/dist/antd.css';
 import AppRouter from "./routers/AppRouter";
 
 
@@ -13,5 +13,6 @@ const jsx = (
     </div>
 );
 
-ReactDOM.render(jsx, document.getElementById('app'));
+const root = createRoot(document.getElementById('app'))
+root.render(jsx);
 
