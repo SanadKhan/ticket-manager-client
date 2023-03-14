@@ -4,13 +4,15 @@ import "normalize.css/normalize.css";
 import './styles/styles.scss';
 // import 'antd/dist/antd.css';
 import AppRouter from "./routers/AppRouter";
+import { Provider } from "react-redux";
+import configureStore from "./store/configureStore";
 
-
+const store = configureStore();
 
 const jsx = (
-    <div>
+    <Provider store={store}>
         <AppRouter />
-    </div>
+    </Provider>
 );
 
 const root = createRoot(document.getElementById('app'))
