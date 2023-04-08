@@ -1,3 +1,3 @@
-import axios from "axios";
+import { fetchPublicData } from "../../request/request";
 
-export const create = (values) => axios.post(process.env.API_BASE_URL+'/v1/admin/user/create', values);
+export const create = (values) => fetchPublicData.post('/v1/admin/user/create', values);

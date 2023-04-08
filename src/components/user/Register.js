@@ -1,55 +1,24 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { Button, Form, Input } from 'antd';
 import { startAddUser } from "./UserAction";
-// import { Connect } from "react-redux";
 import { connect } from "react-redux";
 
-// const onFinish = (values) => {
-//   console.log('Success:', values);
-
-// };
-
-// const onFinishFailed = (errorInfo) => {
-//   console.log('Failed:', errorInfo);
-// };
-
 class Register extends React.Component {
-// const Register = (props) => {
-  state = {
-    name: '',
-    email: '',
-    password: '',
-  }
 
-  onNameChange = (e) => {
-    const name = e.target.value;
-    this.setState(() => ({ name }));
+  onClickTest = () => {
+    console.log("Clicked!", this.props);
+    // onClicked = () => {
+    //   console.log('Im onClicked!');
+    // }
+    // this.onClicked();
   }
-
-  onEmailChange = (e) => {
-    const email = e.target.value;
-    this.setState(() => ({ email }));
-  }
-
-  onPasswordChange = (e) => {
-    const password = e.target.value;
-    this.setState(() => ({ password }));
-  }
-  // const [name, setName] = useState('');
-  // const [email, setEmail] = useState('');
-  // const [password, setPassword] = useState('');
 
   onFinish = (values) => {
     // e.preventDefault();
-    const user = {
-      name: this.state.name,
-      email: this.state.email,
-      password: this.state.password
-    };
-
-    console.log("success", this.props);
-    this.props.dispatch(startAddUser(user));
+    // this.onClickTest();
+    console.log("On Submit Values", values);
+    this.props.dispatch(startAddUser(values));
     this.props.history.push('/list');
   }; 
 
