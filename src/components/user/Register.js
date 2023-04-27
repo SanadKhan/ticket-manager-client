@@ -18,6 +18,7 @@ class Register extends React.Component {
     // e.preventDefault();
     // this.onClickTest();
     console.log("On Submit Values", values);
+    console.log("Redux Store inside onfinish", this.props);
     this.props.dispatch(startAddUser(values));
     this.props.history.push('/list');
   }; 
@@ -25,8 +26,9 @@ class Register extends React.Component {
   onFinishFailed = (err) => {
     console.log("Failed", err);
   };
-
+  
   render() {
+    console.log("redux store ", this.props)
     return (
       <Form
         name="basic"
