@@ -1,41 +1,35 @@
 import { UserApi } from ".";
 
-export const addUser = (user) => ({
-    type: 'ADD_USER',
-    payload: user
-});
-
-const setLoading = (status) => ({
+export const setLoading = (status) => ({
     type: 'SET_LOADER',
     payload: status
 })
 
-const setSuccess = (successMessage) => ({
+export const apiSuccess = (successMessage) => ({
     type: 'API_SUCCESS',
     payload: successMessage
 })
-const setError = (errorMessage) => ({
+
+export const apiError = (errorMessage) => ({
     type: 'API_ERROR',
     payload: errorMessage
 })
-// const handlers = {
-//     loading: false,
-//     error: '',
-//     success: ''
-// };
+
+export const addUser = (user) => ({
+    type: 'ADD_USER',
+    payload: user
+});
 
 export const startAddUser = (userData = {}) => {
     return (dispatch) => {
         dispatch(setLoading(true));
         UserApi.create(userData)
             .then((res) => {
-            console.log("From success", res.data);
-                dispatch(addUser(res.data.user));
-                dispatch(userLogin(res.data.user))
-            // localStorage.setItem('auth-token', res.data.token)
-            // localStorage.setItem('user', res.data.user.name) 
+                dispatch(apiSuccess("Logged In Successfully!"))
+                dispatch(userLogin(res.data))
             }).catch((err) => {
-            // dispatch(setError(err.response.))
+                dispatch(apiError(err.response.data.msgText
+                    ));
             console.log("Error Axios", err)
         })
         dispatch(setLoading(false));
@@ -43,23 +37,28 @@ export const startAddUser = (userData = {}) => {
 };
 
 export const userLogin = (data) => ({   
-    type: 'LOGIN',
+    type: 'LOGIN_SUCCESS',
     payload: data
 })
 
 export const startUserLogin = (loginData = {}) => {
     return (dispatch) => {
+        dispatch(setLoading(true))
         UserApi.login(loginData)
             .then((res) => {
+            dispatch(apiSuccess("Logged In Successfully!"))
             dispatch(userLogin(res.data))
-        }).catch((err) => {
+            }).catch((err) => {
+                dispatch(apiError(err.response.data.msgText
+                    ));
             console.log("Error Axios", err)
-        })
+            })
+        dispatch(setLoading(false))
     }
 }
 
 export const userLogout = () => ({   
-    type: 'LOGOUT'
+    type: 'LOGOUT_SUCCESS'
 })
 
 export const startUserLogout = () => {

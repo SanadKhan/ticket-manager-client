@@ -1,28 +1,29 @@
 import React from "react";
-import { BrowserRouter, Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { Header } from "../components/partials";
 import { Login, Register } from "../components/user";
 import { MyAssignedTicket, MyCreatedTicket, TicketList, TicketForm, TicketView } from "../components/ticket";
 import { NotFoundPage } from "../components/common";
-import history from "../history";
+import PrivateRoute from "./PrivateRoute";
+import PublicRoute from "./PublicRoute";
 
 const AppRouter = () => (
-    <Router history={history}>
+    <BrowserRouter >
         <div>
             <Header />
             <Switch>
-                <Route path="/" component={Login} exact={true}/>
-                <Route path="/register" component={Register} />
-                <Route path="/list" component={TicketList} />
-                <Route path="/myassignedtickets" component={MyAssignedTicket} />
-                <Route path="/mycreatedtickets" component={MyCreatedTicket} />
-                <Route path="/ticket/add" component={TicketForm} />
-                <Route path="/ticket/edit/:id" component={TicketForm} />
-                <Route path="/ticket/view/:id" component={TicketView} />
+                <PublicRoute path="/" component={Login} exact={true} />
+                <PublicRoute path="/register" component={Register} />
+                <PrivateRoute exact={true} path="/list" component={TicketList} />
+                <PrivateRoute path="/myassignedtickets" component={MyAssignedTicket} />
+                <PrivateRoute path="/mycreatedtickets" component={MyCreatedTicket} />
+                <PrivateRoute path="/ticket/add" component={TicketForm} />
+                <PrivateRoute path="/ticket/edit/:id" component={TicketForm} />
+                <PrivateRoute path="/ticket/view/:id" component={TicketView} />
                 <Route component={NotFoundPage} />
             </Switch>
         </div>
-    </Router>
+    </BrowserRouter>
 );
 
 export default AppRouter;

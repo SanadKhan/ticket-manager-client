@@ -7,7 +7,7 @@ import AppRouter from "./routers/AppRouter";
 import { Provider } from "react-redux";
 import configureStore from "./store/configureStore";
 
-const store = configureStore();
+export const store = configureStore();
 
 const jsx = (
     <Provider store={store}>
@@ -16,5 +16,4 @@ const jsx = (
 );
 
 const root = createRoot(document.getElementById('app'))
-root.render(jsx);
-
+root.render(jsx)

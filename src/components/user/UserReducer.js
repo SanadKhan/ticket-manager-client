@@ -1,52 +1,44 @@
-const userReducerDefaultState = [];
+const userReducerDefaultState = {
+    isAuthUser: !!localStorage.getItem("user"),
+    user: localStorage.getItem("user") || {},
+    isLoading: false,
+    error: null,
+    success: null
+};
 
 export default (state = userReducerDefaultState, action) => {
     switch (action.type) {
-        case 'LOADING':
-            return [
+        case 'SET_LOADER':
+            return {
                 ...state,
-                action.payload
-            ];
+                isLoading: action.payload
+            };
         case 'API_SUCCESS':
+            return {
+                ...state,
+                success: action.payload
+            };
+        case 'API_ERROR':
+            return {
+                ...state,
+                error: action.payload
+            };
+        case 'LOGIN_SUCCESS':
             localStorage.setItem('auth-token', action.payload.token)
             localStorage.setItem("user", action.payload.user.name)
-            return [
+            return {
                 ...state,
-                action.payload.user
-            ];
-        // case 'API_ERROR':
-        //     return {
-        //         ...state,
-        //         error: action.payload
-        //     };
-        case 'LOGOUT':
-            localStorage.removeItem('user')
+                user: action.payload.user,
+                isAuthUser: true
+            };
+        case 'LOGOUT_SUCCESS':
             localStorage.removeItem('auth-token')
-            return [
+            localStorage.removeItem('user')
+            return {
                 ...state,
-                {}
-            ];
-        
-        case 'ADD_USER':
-            return [
-                ...state,
-                action.payload
-            ];
-        // case 'REMOVE_EXPENSE':
-        //     return state.filter(({ id }) => id !== action.id );
-        // case 'EDIT_EXPENSE':
-        //     return state.map((expense) => {
-        //         if(expense.id === action.id) {
-        //             return {
-        //                 ...expense,
-        //                  ...action.updates
-        //             };
-        //         } else {
-        //             return expense;
-        //         }
-        //     });
-        // case 'SET_EXPENSES':
-        //     return action.expenses;
+                user: {},
+                isAuthUser: false
+            };
         default: 
             return state;
     }
