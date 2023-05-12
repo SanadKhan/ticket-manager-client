@@ -15,6 +15,27 @@ export const apiError = (errorMessage) => ({
     payload: errorMessage
 })
 
+export const userLogin = (data) => ({   
+    type: 'LOGIN_SUCCESS',
+    payload: data
+})
+
+export const startUserLogin = (loginData = {}) => {
+    return (dispatch) => {
+        dispatch(setLoading(true))
+        UserApi.login(loginData)
+            .then((res) => {
+            dispatch(apiSuccess("Logged In Successfully!"))
+            dispatch(userLogin(res.data))
+            }).catch((err) => {
+                dispatch(apiError(err.response.data.msgText
+                    ));
+            console.log("Error Axios", err)
+            })
+        dispatch(setLoading(false))
+    }
+}
+
 export const addUser = (user) => ({
     type: 'ADD_USER',
     payload: user
@@ -36,26 +57,6 @@ export const startAddUser = (userData = {}) => {
     }
 };
 
-export const userLogin = (data) => ({   
-    type: 'LOGIN_SUCCESS',
-    payload: data
-})
-
-export const startUserLogin = (loginData = {}) => {
-    return (dispatch) => {
-        dispatch(setLoading(true))
-        UserApi.login(loginData)
-            .then((res) => {
-            dispatch(apiSuccess("Logged In Successfully!"))
-            dispatch(userLogin(res.data))
-            }).catch((err) => {
-                dispatch(apiError(err.response.data.msgText
-                    ));
-            console.log("Error Axios", err)
-            })
-        dispatch(setLoading(false))
-    }
-}
 
 export const userLogout = () => ({   
     type: 'LOGOUT_SUCCESS'

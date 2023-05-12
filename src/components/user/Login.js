@@ -18,7 +18,7 @@ class Login extends React.Component {
   componentDidUpdate() {
     if (this.props.apiError) {
       message.error(this.props.apiError);
-      this.props.dispatch(apiError(null));  //clear error for next validation
+      this.props.dispatch(apiError(null));  //clear msgs for if else msg
     } else if (this.props.apiSuccess) {
       message.success(this.props.apiSuccess);
       this.props.dispatch(apiSuccess(null));

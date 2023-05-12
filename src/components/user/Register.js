@@ -1,119 +1,140 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Button, Form, Input } from 'antd';
-import { startAddUser } from "./UserAction";
+import { Button, Form, Input, message } from 'antd';
+import { apiError, apiSuccess, startAddUser } from "./UserAction";
 import { connect } from "react-redux";
 
-const Register = (props) => {
+class Register extends React.Component {
 
-  const onFinish = (values) => {
+  onFinish = (values) => {
     console.log("On Submit Values", values);
-    props.dispatch(startAddUser(values));
-    props.history.push('/list');
+    this.props.dispatch(startAddUser(values));
   };
 
-  const onFinishFailed = (err) => {
+  onFinishFailed = (err) => {
     console.log("Failed", err);
   };
 
-  return (
-    <Form
-      name="basic"
-      labelCol={{
-        span: 8,
-      }}
-      size="large"
-      layout="vertical"
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
-      autoComplete="off"
-    >
-      <div className="user-container">
-        {/* <div className="user-item">
-              <img className="user-form-image" src="images/loginimage.webp" /> 
-          </div> */}
-        <div className="user-item user-form-register">
-          <h3 className="user-form-title">Sign up to Ticket Manager</h3>
-          <hr className="user-form-hr"></hr>
-          <Form.Item
-            label="Name"
-            name="name"
-            rules={[
-              {
-                required: true,
-                message: 'Please input your name!',
-              },
-              {
-                validator: (_, value) => {
-                  if (value) {
-                    if (value.length >= 3) {
-                      return Promise.resolve();
-                    }
-                  }
-                  return Promise.reject(
-                    new Error("Must be atleast three chars")
-                  )
+  componentDidUpdate() {
+    if (this.props.apiError) {
+      message.error(this.props.apiError)
+      this.props.dispatch(apiError(null))
+    } else if (this.props.apiSuccess) {
+      message.success(this.props.apiSuccess)
+      this.props.dispatch(apiSuccess(null))
+      this.props.history.push("/list")
+    }
+  }
+
+  render() {
+
+    return (
+      <Form
+        name="basic"
+        labelCol={{
+          span: 8,
+        }}
+        size="large"
+        layout="vertical"
+        onFinish={this.onFinish}
+        onFinishFailed={this.onFinishFailed}
+        autoComplete="off"
+      >
+        <div className="user-container">
+          {/* <div className="user-item">
+                <img className="user-form-image" src="images/loginimage.webp" /> 
+            </div> */}
+          <div className="user-item user-form-register">
+            <h3 className="user-form-title">Sign up to Ticket Manager</h3>
+            <hr className="user-form-hr"></hr>
+            <Form.Item
+              label="Name"
+              name="name"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input your name!',
                 },
-              }
-            ]}
-          >
-            <Input placeholder="Enter Name" />
-          </Form.Item>
-
-          <Form.Item
-            label="Email"
-            name="email"
-            rules={[
-              {
-                type: 'email',
-                message: 'The input is not valid E-mail!'
-              },
-              {
-                required: true,
-                message: 'Please input your email!',
-              },
-            ]}
-          >
-            <Input placeholder="Enter Email" />
-          </Form.Item>
-
-          <Form.Item
-            label="Password"
-            name="password"
-            rules={[
-              {
-                required: true,
-                message: 'Please input your password!',
-              },
-              {
-                validator: (_, value) => {
-                  if (value) {
-                    if (value.length >= 3) {
-                      return Promise.resolve();
+                {
+                  validator: (_, value) => {
+                    if (value) {
+                      if (value.length >= 3) {
+                        return Promise.resolve();
+                      }
                     }
-                  }
-                  return Promise.reject(
-                    new Error("Must be atleast three chars")
-                  )
+                    return Promise.reject(
+                      new Error("Must be atleast 3 chars")
+                    )
+                  },
                 }
-              }
-            ]}
-          >
-            <Input.Password placeholder="Enter Password" />
-          </Form.Item>
-
-          <Form.Item>
-            <Button type="primary" htmlType="submit" size="large">
-              Submit
-            </Button>
-            <p className="user-form-account-text"> Already have an account?
-              <Link to="/"> Login! </Link>
-            </p>
-          </Form.Item>
+              ]}
+            >
+              <Input placeholder="Enter Name" />
+            </Form.Item>
+  
+            <Form.Item
+              label="Email"
+              name="email"
+              rules={[
+                {
+                  type: 'email',
+                  message: 'The input is not valid E-mail!'
+                },
+                {
+                  required: true,
+                  message: 'Please input your email!',
+                },
+              ]}
+            >
+              <Input placeholder="Enter Email" />
+            </Form.Item>
+  
+            <Form.Item
+              label="Password"
+              name="password"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input your password!',
+                },
+                {
+                  validator: (_, value) => {
+                    if (value) {
+                      if (value.length >= 6) {
+                        return Promise.resolve();
+                      }
+                    }
+                    return Promise.reject(
+                      new Error("Must be atleast 6 chars")
+                    )
+                  }
+                }
+              ]}
+            >
+              <Input.Password placeholder="Enter Password" />
+            </Form.Item>
+  
+            <Form.Item>
+              <Button type="primary" htmlType="submit" size="large">
+                Submit
+              </Button>
+              <p className="user-form-account-text"> Already have an account?
+                <Link to="/"> Login! </Link>
+              </p>
+            </Form.Item>
+          </div>
         </div>
-      </div>
-    </Form>
-  );
+      </Form>
+    );
+  } 
 }
 
-export default connect()(Register);
+const mapStateToProps = (state) => {
+  return {
+    apiError: state.user.error,
+    apiSuccess: state.user.success,
+    isLoading: state.user.isLoading
+  }
+}
+
+export default connect(mapStateToProps)(Register);

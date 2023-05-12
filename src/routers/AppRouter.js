@@ -12,8 +12,10 @@ const AppRouter = () => (
         <div>
             <Header />
             <Switch>
-                <PublicRoute path="/" component={Login} exact={true} />
-                <PublicRoute path="/register" component={Register} />
+                <Route path="/" component={Login} exact={true} />
+                <Route path="/register" component={Register} />
+                {/* <PublicRoute path="/" component={Login} exact={true} />
+                <PublicRoute path="/register" component={Register} /> */}
                 <PrivateRoute exact={true} path="/list" component={TicketList} />
                 <PrivateRoute path="/myassignedtickets" component={MyAssignedTicket} />
                 <PrivateRoute path="/mycreatedtickets" component={MyCreatedTicket} />

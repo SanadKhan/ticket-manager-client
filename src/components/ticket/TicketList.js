@@ -1,6 +1,7 @@
 import React from "react";
 import { Table, Space } from 'antd';
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
 
 const { Column } = Table;
 const data = [
@@ -30,9 +31,9 @@ const data = [
   },
 ];
 
-const TicketList = () => (
+const TicketList = (props) => (
   <div className="content-container">
-    <h2 className="welcome-message">Welcome, Andrew</h2>
+    <h2 className="welcome-message">Welcome, {props.username}</h2>
     <h1>All Tickets</h1>
     <Table dataSource={data}>
       <Column className="table-column" title="Title" dataIndex="title" key="title" />
@@ -54,4 +55,10 @@ const TicketList = () => (
   </div>  
 );
 
-export default TicketList;
+const mapStateToProps = (state) => {
+  return {
+    username: state.user.user.name
+  }
+}
+
+export default connect(mapStateToProps)(TicketList);
