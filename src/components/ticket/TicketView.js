@@ -1,7 +1,9 @@
 import React from "react";
 import { Descriptions } from 'antd';
+import { connect } from "react-redux";
 
-const TicketView = () => (
+const TicketView = (props) => (
+    
     <div className="content-container">
         <h1>Ticket Details  </h1>
         <Descriptions bordered 
@@ -10,8 +12,8 @@ const TicketView = () => (
             contentStyle={{ fontSize: 16}}
             size="middle"
             >
-            <Descriptions.Item label="Title">Ticket Title</Descriptions.Item>
-            <Descriptions.Item label="Description">Ticket Description</Descriptions.Item>
+            <Descriptions.Item label="Title">{props.title}</Descriptions.Item>
+            <Descriptions.Item label="Description">{props.description}</Descriptions.Item>
             <Descriptions.Item label="Assigned By">Andrew</Descriptions.Item>
             <Descriptions.Item label="Assigned To">Andrew</Descriptions.Item>
             <Descriptions.Item label="Status">
@@ -24,4 +26,9 @@ const TicketView = () => (
     </div>
 );
 
-export default TicketView;
+const mapStateToProps = (state, props) => {
+    return {
+        ticket : state.ticket.find(ticket => ticket._id === props.match.params.id)
+    }
+}
+export default connect(mapStateToProps)(TicketView);

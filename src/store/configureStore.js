@@ -9,7 +9,7 @@ export default () => {
     const store = createStore(
         combineReducers({
             user: UserReducer,
-            ticket: TicketReducer
+            tickets: TicketReducer
         }),
         composeEnhancers(applyMiddleware(thunk))
     )

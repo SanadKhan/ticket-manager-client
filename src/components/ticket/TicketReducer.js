@@ -1,15 +1,18 @@
 const ticketReducerDefaultState = [];
 
 export default (state = ticketReducerDefaultState, action) => {
-    switch(action.type) {
-        case 'ADD_TICKET':
-            return [
-                ...state,
-                action.ticket
-            ];
-        // case 'REMOVE_EXPENSE':
+    switch (action.type) {
+        case 'READALL_TICKET':
+            return action.payload;
+            
+        // case 'ADD_TICKET':
+        //     return [
+        //         ...state,
+        //         action.ticket
+        //     ];
+        // case 'REMOVE_TICKET':
         //     return state.filter(({ id }) => id !== action.id );
-        // case 'EDIT_EXPENSE':
+        // case 'EDIT_TICKET':
         //     return state.map((expense) => {
         //         if(expense.id === action.id) {
         //             return {

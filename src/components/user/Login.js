@@ -19,10 +19,6 @@ class Login extends React.Component {
     if (this.props.apiError) {
       message.error(this.props.apiError);
       this.props.dispatch(apiError(null));  //clear msgs for if else msg
-    } else if (this.props.apiSuccess) {
-      message.success(this.props.apiSuccess);
-      this.props.dispatch(apiSuccess(null));
-      this.props.history.push("/list")
     }
   }
 

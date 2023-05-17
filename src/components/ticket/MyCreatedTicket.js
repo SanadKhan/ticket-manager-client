@@ -1,57 +1,93 @@
 import React from "react";
 import { Button, Table, Space } from 'antd';
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+import { startReadAllTicket } from "./TicketAction";
 
-const { Column } = Table;
-const data = [
+class MyCreatedTicket extends React.Component {
+  
+  componentDidMount() {
+    this.props.dispatch(startReadAllTicket());
+  }
+
+  columns = [
     {
-      key: '1',
-      title: 'First Ticket',
-      descp: 'Description of first ticket',
-      assignedto: 'Andrew',
-      status: 'Pending'
+      title: "Sr No.",
+      dataIndex: "id",
+      key: "id",
+      render: (id, record, index) => {
+        ++index;
+        return index;
+      }
     },
     {
-      key: '2',
-      title: 'Second Ticket',
-      descp: 'Description of second ticket',
-      assignedto: 'Jen',
-      status: 'Completed'
+      title: "Title",
+      dataIndex: "title",
+      key: "titles"
     },
     {
-      key: '3',
-      title: 'Third Ticket',
-      descp: 'Description of third ticket',
-      assignedto: 'Jess',
-      status: 'Pending'
+      title: "Description",
+      dataIndex: "description",
+      key: "description"
+    },
+    {
+      title: "Assigned By",
+      dataIndex: "owner",
+      key: "owner"
+    },
+    {
+      title: "Assigned To",
+      dataIndex: "assigned_to",
+      key: "assigned_to"
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status"
+    }
+    ,
+    {
+      title: "Action",
+      key: "action",
+      render: (text, record) => (
+        <Space size="small">
+          <Link to={`/ticket/view/${record.key}`} className="table-column"> View </Link>
+          <Link to={`/ticket/edit/${record.key}`} className="table-column table-edit"> Edit </Link>
+          <Link to={`/ticket/delete/${record.key}`} className="table-column table-delete">Delete</Link>
+        </Space>
+      )
     },
   ];
 
-const MyCreatedTicket = () => (
-    <div className="content-container">
-        <h1>My Created Tickets</h1>
-        <Button type="primary"  htmlType="submit" size="large" >
-          <Link to="/ticket/add">Add Ticket</Link> 
-        </Button>
-        <Table dataSource={data}>
-            <Column className="table-column" title="Title" dataIndex="title" key="title" />
-            <Column className="table-column" title="Description" dataIndex="descp" key="descp" />
-            <Column className="table-column" title="Assinged To" dataIndex="assignedto" key="assignedto" />
-            <Column className="table-column" title="Status" dataIndex="status" key="status" />
-            <Column
-                className="table-column"
-                title="Action"
-                key="action"
-                render={() => (
-                  <Space size="small">
-                    <Link to="/ticket/view/1" className="table-column"> View </Link>
-                    <Link to="/ticket/edit/1" className="table-column table-edit"> Edit </Link>
-                    <Link to="/" className="table-column table-delete">Delete</Link>
-                  </Space>
-                )}
-            />
-        </Table>
-    </div>
-);
+  render() {
+    const assignedTickets = this.props.tickets.length && this.props.tickets.filter(ticket => ticket.owner === this.props.userId)
+    const data = assignedTickets.length ? assignedTickets.map((item) => ({
+      key: item._id,
+      title: item.title,
+      description: item.description,
+      owner: item.owner,
+      assigned_to: item.assigned_to,
+      status: item.status
+    })) : [];
 
-export default MyCreatedTicket;
+    return (
+      <div className="content-container">
+        <h1>My Created Tickets</h1>
+        <Button type="primary" htmlType="submit" size="large" >
+          <Link to="/ticket/add">Add Ticket</Link>
+        </Button>
+        <Table columns={this.columns} dataSource={data} loading={this.props.isLoading} />
+      </div>
+    );
+  };
+};
+
+const mapStateToProps = (state) => {
+  return {
+    userId: state.user.user._id,
+    tickets: state.tickets,
+    isLoading: state.isLoading
+  }
+};
+
+export default connect(mapStateToProps)(MyCreatedTicket);

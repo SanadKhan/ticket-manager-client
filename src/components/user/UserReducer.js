@@ -1,6 +1,6 @@
 const userReducerDefaultState = {
-    isAuthUser: !!localStorage.getItem("user"),
-    user: localStorage.getItem("user") || {},
+    isAuthUser: false,
+    user: null,
     isLoading: false,
     error: null,
     success: null
