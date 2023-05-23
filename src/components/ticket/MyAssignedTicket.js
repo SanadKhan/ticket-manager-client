@@ -68,15 +68,15 @@ class MyAssignedTicket extends React.Component {
   ];
 
   render() {
-    const assignedTickets = this.props.tickets.length && this.props.tickets.filter(ticket => ticket.assigned_to === this.props.userId)
-    const data = assignedTickets.length ? assignedTickets.map((item) => ({
+    
+    const data = this.props.tickets.map((item) => ({
       key: item._id,
       title: item.title,
       description: item.description,
-      owner: item.owner,
-      assigned_to: item.assigned_to,
+      owner: item.owner.name,
+      assigned_to: item.assigned_to.name,
       status: item.status
-    })) : [];
+    }));
 
     return (
       <div className="content-container">
@@ -89,8 +89,7 @@ class MyAssignedTicket extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    userId: state.user.user._id,
-    tickets: state.tickets,
+    tickets: state.tickets.filter((ticket) => ticket.assigned_to._id === state.user.user._id),
     isLoading: state.isLoading
   }
 };

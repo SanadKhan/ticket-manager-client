@@ -58,36 +58,20 @@ class TicketList extends React.Component {
 
   render() {
 
-    const data = this.props.tickets.length ? this.props.tickets.map((item) => ({
+    const data = this.props.tickets.map((item) => ({
       key: item._id,
       title: item.title,
       description: item.description,
-      owner: item.owner,
-      assigned_to: item.assigned_to,
+      owner: item.owner.name,
+      assigned_to: item.assigned_to.name,
       status: item.status
-    })) : [];
+    }));
 
     return (
       <div className="content-container">
         <h2 className="welcome-message">Welcome, {this.props.username}</h2>
         <h1>All Tickets</h1>
         <Table columns={this.columns} dataSource={data} loading={this.props.isLoading} />
-        {/* <Column className="table-column" title="Title" dataIndex="title" key="title" />
-          <Column className="table-column" title="Description" dataIndex="description" key="description" />
-          <Column className="table-column" title="Assinged By" dataIndex="owner" key="owner" />
-          <Column className="table-column" title="Assinged To" dataIndex="assigned_to" key="asigned_to" />
-          <Column className="table-column" title="Status" dataIndex="status" key="status" />
-          <Column
-            className="table-column"
-            title="Action"
-            key="action"
-            render={() => (
-              <Space size="small">
-                <Link to="/ticket/view/1" className="table-column"> View </Link>
-              </Space>
-            )}
-          />
-        </Table> */}
       </div>
     )
   }

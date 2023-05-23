@@ -5,9 +5,9 @@ import { connect } from "react-redux";
 const PrivateRoute = (props) => {
     const { component: Component, isAuthUser, ...rest } = props;
     return (
-        <Route {...rest} render={() => (
+        <Route {...rest} render={(routeProps) => (
             isAuthUser
-                ? <Component />
+                ? <Component {...routeProps} />
                 : <Redirect to='/' />
         )} />
     );

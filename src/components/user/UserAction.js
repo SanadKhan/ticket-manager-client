@@ -1,4 +1,5 @@
 import { UserApi } from ".";
+import { ticketApi } from "../ticket";
 
 export const setLoading = (status) => ({
     type: 'SET_LOADER',
@@ -34,6 +35,49 @@ export const startUserLogin = (loginData = {}) => {
         dispatch(setLoading(false))
     }
 }
+
+
+const uploadFiles = (data) => ({
+    type: 'ADD_FILES',
+    payload: data
+});
+
+export const startUploadFiles = (files = {}) => {
+    return (dispatch) => {
+        console.log("files from action", files);
+        dispatch(setLoading(true))
+        ticketApi.uploadFiles(files)
+            .then((res) => {
+                console.log("response data from upload files", res.data)
+                dispatch(uploadFiles(res.data.files))
+                dispatch(apiSuccess("Uploaded Successfully!"))
+            }).catch((err) => {
+                dispatch(apiError(err.response.data.msgText))
+                console.log("Axios Error", err)
+            })
+        dispatch(setLoading(false))
+    }
+}
+
+export const readAllUser = (users) => ({
+    type: 'READALL_USER',
+    payload: users
+});
+
+export const startReadAllUser = () => {
+    return (dispatch) => {
+        dispatch(setLoading(true));
+        UserApi.readAll()
+            .then((res) => {
+                dispatch(readAllUser(res.data.user))
+            }).catch((err) => {
+                dispatch(apiError(err.response.data.msgText
+                    ));
+            console.log("Error Axios", err)
+        })
+        dispatch(setLoading(false));
+    }
+};
 
 export const addUser = (user) => ({
     type: 'ADD_USER',

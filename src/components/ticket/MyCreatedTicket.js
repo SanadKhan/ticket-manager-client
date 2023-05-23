@@ -1,13 +1,30 @@
 import React from "react";
-import { Button, Table, Space } from 'antd';
+import { Button, Table, Space, message, Popconfirm } from 'antd';
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { startReadAllTicket } from "./TicketAction";
+import { startDeleteTicket, startReadAllTicket } from "./TicketAction";
+import { apiError, apiSuccess } from "../user/UserAction";
 
 class MyCreatedTicket extends React.Component {
   
   componentDidMount() {
     this.props.dispatch(startReadAllTicket());
+  }
+
+  componentDidUpdate() {
+    if (this.props.apiSuccess) {
+      message.success(this.props.apiSuccess)
+      this.props.dispatch(apiSuccess(null))
+    }
+    if (this.props.apiError) {
+      message.success(this.props.apiError)
+      this.props.dispatch(apiError(null))
+    }
+  }
+
+  onDeleteRecord = (id) => {
+    console.log("delete cond", id)
+    this.props.dispatch(startDeleteTicket(id))
   }
 
   columns = [
@@ -53,22 +70,27 @@ class MyCreatedTicket extends React.Component {
         <Space size="small">
           <Link to={`/ticket/view/${record.key}`} className="table-column"> View </Link>
           <Link to={`/ticket/edit/${record.key}`} className="table-column table-edit"> Edit </Link>
-          <Link to={`/ticket/delete/${record.key}`} className="table-column table-delete">Delete</Link>
+          {/* <Link to={`/ticket/delete/${record.key}`} className="table-column table-delete">Delete</Link> */}
+          <Popconfirm
+            title="Are you sure?"
+            onConfirm={() => this.onDeleteRecord(record.key)}
+          >
+            <span className="table-column table-delete">Delete</span>
+          </Popconfirm>
         </Space>
       )
     },
   ];
 
   render() {
-    const assignedTickets = this.props.tickets.length && this.props.tickets.filter(ticket => ticket.owner === this.props.userId)
-    const data = assignedTickets.length ? assignedTickets.map((item) => ({
+    const data = this.props.tickets.map((item) => ({
       key: item._id,
       title: item.title,
       description: item.description,
-      owner: item.owner,
-      assigned_to: item.assigned_to,
+      owner: item.owner.name,
+      assigned_to: item.assigned_to.name,
       status: item.status
-    })) : [];
+    }));
 
     return (
       <div className="content-container">
@@ -84,9 +106,10 @@ class MyCreatedTicket extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    userId: state.user.user._id,
-    tickets: state.tickets,
-    isLoading: state.isLoading
+    tickets: state.tickets.filter(ticket => ticket.owner._id === state.user.user._id),
+    isLoading: state.isLoading,
+    apiSuccess: state.user.success,
+    apiError: state.user.error
   }
 };
 

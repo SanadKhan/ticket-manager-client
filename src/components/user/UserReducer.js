@@ -3,7 +3,9 @@ const userReducerDefaultState = {
     user: null,
     isLoading: false,
     error: null,
-    success: null
+    success: null,
+    files: null,
+    allUsers: null
 };
 
 export default (state = userReducerDefaultState, action) => {
@@ -23,6 +25,16 @@ export default (state = userReducerDefaultState, action) => {
                 ...state,
                 error: action.payload
             };
+        case 'READALL_USER':
+            return {
+                ...state,
+                allUsers: action.payload
+            }
+        case 'ADD_FILES':
+            return {
+                ...state,
+                files: action.payload
+            }
         case 'LOGIN_SUCCESS':
             localStorage.setItem('auth-token', action.payload.token)
             localStorage.setItem("user", action.payload.user.name)

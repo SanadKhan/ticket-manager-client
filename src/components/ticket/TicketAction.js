@@ -40,3 +40,46 @@ export const startAddTicket = (ticketData = {}) => {
         dispatch(setLoading(false))
     }
 }
+
+const updateTicket = (data, id) => ({
+    type: 'UPDATE_TICKET',
+    id,
+    payload: data
+});
+
+export const startUpdateTicket = (ticketData, ticketId) => {
+    return (dispatch) => {
+        dispatch(setLoading(true))
+        ticketApi.update({ ticketData, ticketId})
+            .then((res) => {
+                console.log("response data", res.data)
+                dispatch(updateTicket(res.data, id))
+                dispatch(apiSuccess("Updated Successfully!"))
+            }).catch((err) => {
+                dispatch(apiError(err.response.data.msgText))
+                console.log("Axios Error", err)
+            })
+        dispatch(setLoading(false))
+    }
+}
+
+const deleteTicket = (id) => ({
+    type: 'DELETE_TICKET',
+    id
+});
+
+export const startDeleteTicket = (ticketId) => {
+    return (dispatch) => {
+        dispatch(setLoading(true))
+        ticketApi.remove(ticketId)
+            .then((res) => {
+                console.log("response data", res)
+                dispatch(deleteTicket(ticketId))
+                dispatch(apiSuccess("Deleted Successfully!"))
+            }).catch((err) => {
+                // dispatch(apiError(err.response.data.msgText))
+                console.log("Axios Error", err)
+            })
+        dispatch(setLoading(false))
+    }
+}

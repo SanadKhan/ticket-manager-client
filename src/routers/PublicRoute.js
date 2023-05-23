@@ -5,10 +5,10 @@ import { connect } from "react-redux";
 const PublicRoute = (props) => {
     const { component: Component, isAuthUser, ...rest } = props;
     return (
-        <Route {...rest} render={() => (
+        <Route {...rest} render={(routeProps) => (
             isAuthUser
                 ? <Redirect to="/list" />
-                : <Component />
+                : <Component {...routeProps} />
         )} />
     );
 };
