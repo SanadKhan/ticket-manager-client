@@ -10,7 +10,7 @@ const EditTicket = (props) => (
                 ticket={props.ticket}
                 ticketFiles={props.ticket.ticket_files.length ? props.ticket.ticket_files : []}
                 OnSubmit={(ticket) => {
-                    props.dispatch(startUpdateTicket(props.ticket._id, ticket))
+                    props.dispatch(startUpdateTicket(ticket, props.ticket._id))
                     props.history.push('/mycreatedtickets')
                 }} />
         </div>

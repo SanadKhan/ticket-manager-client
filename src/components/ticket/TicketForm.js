@@ -99,7 +99,8 @@ class TicketForm extends React.Component {
       // const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
       onChange: ({ fileList: newFileList }) => {
         // console.log("from onChange FileList", info)
-        this.setState(() => { this.state.fileList = newFileList })
+        // this.setState(() => { fileList = newFileList })
+        this.setState({ fileList: newFileList })
         // this.props.dispatch(setLoading(true))
       },
       onRemove: (file) => {
@@ -124,7 +125,7 @@ class TicketForm extends React.Component {
       if (this.state.fileList.length) {
         console.log("inside fiel append")
         this.state.fileList.forEach(file => {
-          formData.append("ticket_files", file.originFileObj)
+          if (file.originFileObj) formData.append("ticket_files", file.originFileObj);
         });
       }
       console.log("final Formdata ", formData);

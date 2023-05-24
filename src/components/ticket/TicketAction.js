@@ -50,10 +50,10 @@ const updateTicket = (data, id) => ({
 export const startUpdateTicket = (ticketData, ticketId) => {
     return (dispatch) => {
         dispatch(setLoading(true))
-        ticketApi.update({ ticketData, ticketId})
+        ticketApi.update(ticketData, ticketId)
             .then((res) => {
                 console.log("response data", res.data)
-                dispatch(updateTicket(res.data, id))
+                dispatch(updateTicket(res.data, ticketId))
                 dispatch(apiSuccess("Updated Successfully!"))
             }).catch((err) => {
                 dispatch(apiError(err.response.data.msgText))
