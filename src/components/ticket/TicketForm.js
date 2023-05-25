@@ -122,11 +122,16 @@ class TicketForm extends React.Component {
       formData.append("owner", this.props.userId);
       formData.append("assigned_to", values.assigned_to);
       formData.append("status", values.status);
-      if (this.state.fileList.length) {
-        console.log("inside fiel append")
+      if (this.state.fileList) {
+        console.log("inside add file append")
         this.state.fileList.forEach(file => {
           if (file.originFileObj) formData.append("ticket_files", file.originFileObj);
         });
+      }
+      if (this.state.deleteFiles) {
+        console.log("inside deletefile append")
+        formData.append("deleted_img", this.state.deleteFiles)
+        // this.state.deleteFiles.forEach(file => formData.append("deleted_img", file));
       }
       console.log("final Formdata ", formData);
       for (const iterator of formData.entries()) {
