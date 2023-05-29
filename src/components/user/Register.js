@@ -7,7 +7,6 @@ import { connect } from "react-redux";
 class Register extends React.Component {
 
   onFinish = (values) => {
-    console.log("On Submit Values", values);
     this.props.dispatch(startAddUser(values));
   };
 
@@ -37,10 +36,7 @@ class Register extends React.Component {
         autoComplete="off"
       >
         <div className="user-container">
-          {/* <div className="user-item">
-                <img className="user-form-image" src="images/loginimage.webp" /> 
-            </div> */}
-          <div className="user-item user-form-register">
+          <div className="user-form">
             <h3 className="user-form-title">Sign up to Ticket Manager</h3>
             <hr className="user-form-hr"></hr>
             <Form.Item

@@ -7,7 +7,6 @@ import { startUserLogin, apiError, apiSuccess } from "./UserAction";
 class Login extends React.Component {
 
   onFinish = (values) => {
-    console.log("success", values);
     this.props.dispatch(startUserLogin(values));
   }
 
@@ -27,9 +26,6 @@ class Login extends React.Component {
     return (
       <Form
         name="basic"
-        labelCol={{
-          span: 8,
-        }}
         size="large"
         layout="vertical"
         onFinish={this.onFinish}
@@ -37,10 +33,7 @@ class Login extends React.Component {
         autoComplete="off"
       >
         <div className="user-container">
-          {/* <div className="user-item">
-              <img className="user-form-image" src="images/loginimage.webp" />
-          </div> */}
-          <div className="user-item user-form-login">
+          <div className="user-form">
             <h3 className="user-form-title">Sign in to Ticket Manager</h3>
             <hr className="user-form-hr"></hr>
             <Form.Item

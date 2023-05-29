@@ -2,27 +2,34 @@
     display: flex;
 }
 
-.user-item {
-    width: 50%;
-}
+// .user-item {
+//     width: 50%;
+// }
 
-.user-form-login {
+.user-form{
+    // width: 30%;
+    // text-align: center;
+    // justify-content: center;
+    // margin-top: 55px;
+    // margin-left: 115px !important;
+    
+    margin: auto;
     width: 30%;
-    margin-top: 55px;
-    margin-left: 115px !important;
+    padding: 10px;
+
 }
 
-.user-form-register {
-    width: 30%;
-    margin-top: 5px;
-    margin-left: 115px !important;
-}
+// .user-form-register {
+//     width: 30%;
+//     margin-top: 5px;
+//     margin-left: 115px !important;
+// }
 
-.user-form-image {
-    width: 80%;
-    margin-top: 115px;
-    margin-left: 130px !important;
-}
+// .user-form-image {
+//     width: 80%;
+//     margin-top: 115px;
+//     margin-left: 130px !important;
+// }
 
 .user-form-ticket {
     width: 40%;

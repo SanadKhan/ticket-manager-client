@@ -1,15 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Button, Form, Input, Select, Space, Upload, message } from 'antd';
+import { Button, Form, Input, Select, Upload, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { apiError, startReadAllUser, apiSuccess, startUploadFiles, setLoading } from "../user/UserAction";
+import { apiError, startReadAllUser } from "../user/UserAction";
 import { connect } from "react-redux";
 import { ticketStatusOptions } from "../../utils/constant";
 
 class TicketForm extends React.Component {
 
   componentDidMount() {
-    console.log("Componenet Mounted")
     this.props.dispatch(startReadAllUser())
   }
 
@@ -19,8 +18,6 @@ class TicketForm extends React.Component {
       this.props.dispatch(apiError(null))
     }
   }
-
-
 
   state = {
     fileList: this.props.ticketFiles ? this.props.ticketFiles.map((file) => {
@@ -35,7 +32,7 @@ class TicketForm extends React.Component {
   initialValues = {
     title: this.props.ticket ? this.props.ticket.title : '',
     description: this.props.ticket ? this.props.ticket.description : '',
-    assigned_to: this.props.ticket ? this.props.ticket.assigned_to._id : this.props.userId,
+    assigned_to: this.props.ticket ? this.props.ticket.assigned_to : this.props.userId,
     status: this.props.ticket ? this.props.ticket.status : 'Pending'
   }
 
@@ -43,35 +40,7 @@ class TicketForm extends React.Component {
     console.log('Failed:', errorInfo);
   };
 
-  // handleImageUpload = () => {
-  //   console.log('filelist values', this.state.fileList);
-  //   if (this.state.fileList.length) {
-  //     const formData = new FormData();
-  //     this.state.fileList.forEach(file => {
-  //       formData.append("files", file.originFileObj)
-  //     });
-  //     console.log("modified ticketFiles ", formData);
-  //     this.props.dispatch(startUploadFiles(formData));
-  //   }
-  // }
-
   render() {
-
-    // const defaultFileList = () => {
-    //   let fileList = []
-    //   if (this.props.ticket) {
-    //     if (!this.props.ticket.ticket_files.length) {
-    //       fileList = [];
-    //     } else {
-    //       fileList = this.props.ticket.ticket_files.map((file) => {
-    //         const url = file.url;
-    //         const status = "done"
-    //         return { url, status }
-    //       });
-    //     }
-    //     console.log("filli", fileList)
-    //     return fileList;
-    //   };
 
     const fileProps = {
       accept: 'image/*',
@@ -79,16 +48,6 @@ class TicketForm extends React.Component {
       listType: "picture",
       maxCount: 2,
       fileList: this.state.fileList,
-      // onChange(info) {
-      //   if (info.file.status !== 'uploading') {
-      //     console.log(info.file, info.fileList);
-      //   }
-      //   if (info.file.status === 'done') {
-      //     message.success(`${info.file.name} file uploaded successfully`);
-      //   } else if (info.file.status === 'error') {
-      //     message.error(`${info.file.name} file upload failed.`);
-      //   }
-      // },
       beforeUpload: (file) => {
         if (!file.size > 2 * 1024 * 1024) {
           message.error(`${file.name} must smaller than 2MB!`);
@@ -96,15 +55,10 @@ class TicketForm extends React.Component {
         }
         return false;
       },
-      // const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
       onChange: ({ fileList: newFileList }) => {
-        // console.log("from onChange FileList", info)
-        // this.setState(() => { fileList = newFileList })
         this.setState({ fileList: newFileList })
-        // this.props.dispatch(setLoading(true))
       },
       onRemove: (file) => {
-        console.log("removed file", file)
         if (file.fileId) {
           const newArray = this.state.deleteFiles.slice(); // Create a copy of the array
           newArray.push(file.fileId); // Push the new value into the copied array
@@ -114,8 +68,7 @@ class TicketForm extends React.Component {
     }
 
     const onFinish = (values) => {
-      console.log('Success:', values);
-      console.log("ticketFiles redux ", this.props.ticketFiles);
+
       const formData = new FormData();
       formData.append("title", values.title);
       formData.append("description", values.description);
@@ -123,24 +76,15 @@ class TicketForm extends React.Component {
       formData.append("assigned_to", values.assigned_to);
       formData.append("status", values.status);
       if (this.state.fileList) {
-        console.log("inside add file append")
         this.state.fileList.forEach(file => {
           if (file.originFileObj) formData.append("ticket_files", file.originFileObj);
         });
       }
       if (this.state.deleteFiles) {
-        console.log("inside deletefile append")
-        formData.append("deleted_img", this.state.deleteFiles)
-        // this.state.deleteFiles.forEach(file => formData.append("deleted_img", file));
-      }
-      console.log("final Formdata ", formData);
-      for (const iterator of formData.entries()) {
-        console.log("formadta", iterator)
+        this.state.deleteFiles.forEach(file => formData.append("deleted_img[]", file));
       }
       this.props.OnSubmit(formData);
     };
-    console.log("props", this.props)
-    console.log("state", this.state)
 
     return (
       <Form
