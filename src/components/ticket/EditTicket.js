@@ -4,17 +4,14 @@ import { connect } from "react-redux";
 import { startUpdateTicket } from "./TicketAction";
 
 const EditTicket = (props) => (
-    <div className="user-container">
-        <div className="user-item user-form-ticket">
-            <TicketForm title="Edit Ticket"
-                ticket={props.ticket}
-                ticketFiles={props.ticket.ticket_files.length ? props.ticket.ticket_files : []}
-                OnSubmit={(ticket) => {
-                    props.dispatch(startUpdateTicket(ticket, props.ticket._id))
-                    props.history.push('/mycreatedtickets')
-                }} />
-        </div>
-    </div>
+    <TicketForm title="Edit Ticket"
+        ticket={props.ticket}
+        ticketFiles={props.ticket.ticket_files.length ? props.ticket.ticket_files : []}
+        OnSubmit={(ticket) => {
+            props.dispatch(startUpdateTicket(ticket, props.ticket._id))
+            props.history.push('/mycreatedtickets')
+        }}
+    />
 );
 
 const mapStateToProps = (state, props) => {

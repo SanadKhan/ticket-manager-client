@@ -96,7 +96,7 @@ class TicketForm extends React.Component {
         autoComplete="off"
       >
         <div className="user-container">
-          <div className="user-item user-form-ticket">
+          <div className="user-form-ticket">
             <p style={{ fontSize: 24 }}>{this.props.title}</p>
             <Form.Item
               label="Title"
