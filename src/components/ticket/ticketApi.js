@@ -1,6 +1,8 @@
 import { privateInstance } from "../../request/request";
 
-export const readAll = () => privateInstance.get(`/v1/admin/ticket`);
+export const readAllTicket = (page, perPage) => privateInstance.get(`/v1/admin/ticket?p=${page}&r=${perPage}`);
+
+export const readAllFilteredTicket = (id, page, perPage) => privateInstance.get(`/v1/admin/filteredTicket/${id}?p=${page}&r=${perPage}`);
 
 export const create = (ticketData) => privateInstance.post('/v1/admin/ticket/create', ticketData);
 

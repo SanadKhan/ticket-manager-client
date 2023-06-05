@@ -7,8 +7,10 @@ import { apiError, apiSuccess, startReadAllUser } from "../user/UserAction";
 
 class MyCreatedTicket extends React.Component {
   
+  perPage = 5;
   componentDidMount() {
-    this.props.dispatch(startReadAllTicket());
+    // this.props.dispatch(startReadAllTicket());
+    this.fetchTicketRecords(1);
     this.props.dispatch(startReadAllUser());
   }
 
@@ -21,6 +23,10 @@ class MyCreatedTicket extends React.Component {
       message.success(this.props.apiError)
       this.props.dispatch(apiError(null))
     }
+  }
+
+  fetchTicketRecords = (page) => {
+    this.props.dispatch(startReadAllTicket(page,this.perPage))
   }
 
   onDeleteRecord = (id) => {
@@ -105,7 +111,18 @@ class MyCreatedTicket extends React.Component {
         <Button type="primary" htmlType="submit" size="large" >
           <Link to="/ticket/add">Add Ticket</Link>
         </Button>
-        <Table columns={columns} dataSource={data} loading={this.props.isLoading} />
+        <Table
+          columns={columns}
+          dataSource={data}
+          loading={this.props.isLoading}
+          pagination={{
+            pageSize: this.perPage,
+            total: this.props.ticketTotalPages,
+            onChange: (page) => {
+              this.fetchTicketRecords(page)
+            }
+          }}
+        />
       </div>
     );
   };
@@ -117,7 +134,8 @@ const mapStateToProps = (state) => {
     isLoading: state.user.isLoading,
     apiSuccess: state.user.success,
     apiError: state.user.error,
-    AllUsers: state.user.allUsers
+    AllUsers: state.user.allUsers,
+    ticketTotalPages: state.user.ticketTotalPages
   }
 };
 

@@ -21,6 +21,11 @@ export const userLogin = (data) => ({
     payload: data
 })
 
+export const paginationTotalPages = (data) => ({
+    type: 'TICKET_TOTALPAGES',
+    payload: data
+});
+
 export const startUserLogin = (loginData = {}) => {
     return (dispatch) => {
         dispatch(setLoading(true))

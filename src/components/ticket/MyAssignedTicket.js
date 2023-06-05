@@ -8,8 +8,10 @@ import { ticketStatusOptions } from "../../utils/constant";
 
 class MyAssignedTicket extends React.Component {
 
+  perPage = 5;
   componentDidMount() {
-    this.props.dispatch(startReadAllTicket());
+    // this.props.dispatch(startReadAllTicket());
+    this.fetchTicketRecords(1);
     this.props.dispatch(startReadAllUser());
   }
 
@@ -23,6 +25,10 @@ class MyAssignedTicket extends React.Component {
       message.error(this.props.apiError);
       this.props.dispatch(apiError(null));
     }
+  }
+
+  fetchTicketRecords = (page) => {
+    this.props.dispatch(startReadAllTicket(page,this.perPage))
   }
 
   render() {
@@ -108,7 +114,18 @@ class MyAssignedTicket extends React.Component {
     return (
       <div className="content-container">
         <h1>Tickets Assigned To Me</h1>
-        <Table columns={columns} dataSource={data} loading={this.props.isLoading} />
+        <Table
+          columns={columns}
+          dataSource={data}
+          loading={this.props.isLoading}
+          pagination={{
+            pageSize: this.perPage,
+            total: this.props.ticketTotalPages,
+            onChange: (page) => {
+              this.fetchTicketRecords(page)
+            }
+          }}
+        />
       </div>
     );
   };
@@ -121,6 +138,7 @@ const mapStateToProps = (state) => {
     AllUsers: state.user.allUsers,
     apiSuccess: state.user.success,
     apiError: state.user.error,
+    ticketTotalPages: state.user.ticketTotalPages
   }
 };
 

@@ -2,14 +2,21 @@ import React from "react";
 import { Table, Space } from 'antd';
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { startReadAllTicket } from "./TicketAction";
+import { readAllTicket, startReadAllTicket } from "./TicketAction";
 import { startReadAllUser } from "../user/UserAction";
 
 class TicketList extends React.Component {
 
+  perPage = 5;
   componentDidMount() {
-    this.props.dispatch(startReadAllTicket());
+    // this.props.dispatch(startReadAllTicket());
+    this.fetchTicketRecords(1);
     this.props.dispatch(startReadAllUser());
+    console.log("mounted tciket count", this.props)
+  }
+
+  fetchTicketRecords = (page) => {
+    this.props.dispatch(startReadAllTicket(page,this.perPage))
   }
 
   render() {
@@ -81,7 +88,18 @@ class TicketList extends React.Component {
       <div className="content-container">
         <h2 className="welcome-message">Welcome, {this.props.username}</h2>
         <h1>All Tickets</h1>
-        <Table columns={columns} dataSource={data} loading={this.props.isLoading} />
+        <Table
+          columns={columns}
+          dataSource={data}
+          loading={this.props.isLoading}
+          pagination={{ 
+            pageSize: this.perPage,
+            total: this.props.ticketTotalPages,
+            onChange: (page) => {
+              this.fetchTicketRecords(page)
+            }
+          }}
+        />
       </div>
     )
   }
@@ -91,8 +109,9 @@ const mapStateToProps = (state) => {
   return {
     username: state.user.user.name,
     isLoading: state.user.isLoading,
-    tickets: state.tickets,
-    AllUsers: state.user.allUsers
+    tickets: state.ticket.ticketList,
+    AllUsers: state.user.allUsers,
+    ticketTotalPages: state.user.ticketTotalPages
   }
 }
 

@@ -24,6 +24,7 @@ export default (state = userReducerDefaultState, action) => {
                 ...state,
                 error: action.payload
             };
+       
         case 'READALL_USER':
             return {
                 ...state,
