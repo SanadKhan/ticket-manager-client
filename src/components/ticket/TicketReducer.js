@@ -2,9 +2,9 @@ const ticketReducerDefaultState = {
     ticketList: null,
     myCreatedTickets: null,
     myAssignedTickets: null,
-    ticketListTotalPages: null,
-    myCreatedTicketsTotalPages: null,
-    myAssignedTicketsTotalPages: null
+    ticketListTotalRecords: null,
+    myCreatedTicketsTotalRecords: null,
+    myAssignedTicketsTotalRecords: null
 };
 
 export default (state = ticketReducerDefaultState, action) => {
@@ -15,10 +15,10 @@ export default (state = ticketReducerDefaultState, action) => {
                 ...state,
                 ticketList: action.payload
             };
-        case 'TICKETLIST_TOTALPAGES':
+        case 'TICKETLIST_TOTALRECORDS':
             return {
                 ...state,
-                ticketListTotalPages: action.payload
+                ticketListTotalRecords: action.payload
             }
         case 'READALL_MYCREATEDTICKET':
             // return action.payload;
@@ -26,10 +26,10 @@ export default (state = ticketReducerDefaultState, action) => {
                 ...state,
                 myCreatedTickets: action.payload
             };
-        case 'MYCREATEDTICKET_TOTALPAGES':
+        case 'MYCREATEDTICKET_TOTALRECORDS':
             return {
                 ...state,
-                myCreatedTicketsTotalPages: action.payload
+                myCreatedTicketsTotalRecords: action.payload
             }
         case 'READALL_MYASSIGNEDTICKET':
             // return action.payload;
@@ -37,10 +37,10 @@ export default (state = ticketReducerDefaultState, action) => {
                 ...state,
                 myAssignedTickets: action.payload
             };
-        case 'MYASSIGNEDTICKET_TOTALPAGES':
+        case 'MYASSIGNEDTICKET_TOTALRECORDS':
             return {
                 ...state,
-                myAssignedTicketsTotalPages: action.payload
+                myAssignedTicketsTotalRecords: action.payload
             }
         case 'ADD_TICKET':
             // return [

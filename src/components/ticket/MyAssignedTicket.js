@@ -2,7 +2,7 @@ import React from "react";
 import { Table, Space, Form, Select, message } from 'antd';
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { startReadAllTicket, startUpdateTicketStatus } from "./TicketAction";
+import { startReadAllMyAssignedTicket, startUpdateTicketStatus } from "./TicketAction";
 import { apiError, apiSuccess, startReadAllUser } from "../user/UserAction";
 import { ticketStatusOptions } from "../../utils/constant";
 
@@ -17,7 +17,8 @@ class MyAssignedTicket extends React.Component {
 
   componentDidUpdate() {
     if (this.props.apiSuccess) {
-      this.props.dispatch(startReadAllTicket());
+      // this.props.dispatch(startReadAllMyAssignedTicket());
+      this.fetchTicketRecords(1);
       message.success(this.props.apiSuccess);
       this.props.dispatch(apiSuccess(null));
     }
@@ -28,7 +29,7 @@ class MyAssignedTicket extends React.Component {
   }
 
   fetchTicketRecords = (page) => {
-    this.props.dispatch(startReadAllTicket(page,this.perPage))
+    this.props.dispatch(startReadAllMyAssignedTicket(page, this.perPage, this.props.userId))
   }
 
   render() {
@@ -102,14 +103,14 @@ class MyAssignedTicket extends React.Component {
       },
     ];
 
-    const data = this.props.tickets.map((item) => ({
+    const data = this.props.tickets ? this.props.tickets.map((item) => ({
       key: item._id,
       title: item.title,
       description: item.description,
       owner: item.owner,
       assigned_to: item.assigned_to,
       status: item.status
-    }));
+    })) : [];
 
     return (
       <div className="content-container">
@@ -120,7 +121,7 @@ class MyAssignedTicket extends React.Component {
           loading={this.props.isLoading}
           pagination={{
             pageSize: this.perPage,
-            total: this.props.ticketTotalPages,
+            total: this.props.myAssignedTicketsTotalRecords,
             onChange: (page) => {
               this.fetchTicketRecords(page)
             }
@@ -133,12 +134,14 @@ class MyAssignedTicket extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    tickets: state.tickets.filter((ticket) => ticket.assigned_to === state.user.user._id),
+    // tickets: state.tickets.filter((ticket) => ticket.assigned_to === state.user.user._id),
+    tickets: state.tickets.myAssignedTickets,
+    userId: state.user.user._id,
     isLoading: state.user.isLoading,
     AllUsers: state.user.allUsers,
     apiSuccess: state.user.success,
     apiError: state.user.error,
-    ticketTotalPages: state.user.ticketTotalPages
+    myAssignedTicketsTotalRecords: state.tickets.myAssignedTicketsTotalRecords
   }
 };
 

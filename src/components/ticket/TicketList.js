@@ -2,7 +2,7 @@ import React from "react";
 import { Table, Space } from 'antd';
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { readAllTicket, startReadAllTicket } from "./TicketAction";
+import { startReadAllTicket } from "./TicketAction";
 import { startReadAllUser } from "../user/UserAction";
 
 class TicketList extends React.Component {
@@ -75,14 +75,14 @@ class TicketList extends React.Component {
       },
     ];
 
-    const data = this.props.tickets.map((item) => ({
+    const data = this.props.tickets ?  this.props.tickets.map((item) => ({
       key: item._id,
       title: item.title,
       description: item.description,
       owner: item.owner,
       assigned_to: item.assigned_to,
       status: item.status
-    }));
+    })) : [];
 
     return (
       <div className="content-container">
@@ -94,7 +94,7 @@ class TicketList extends React.Component {
           loading={this.props.isLoading}
           pagination={{ 
             pageSize: this.perPage,
-            total: this.props.ticketTotalPages,
+            total: this.props.ticketListTotalRecords,
             onChange: (page) => {
               this.fetchTicketRecords(page)
             }
@@ -109,9 +109,9 @@ const mapStateToProps = (state) => {
   return {
     username: state.user.user.name,
     isLoading: state.user.isLoading,
-    tickets: state.ticket.ticketList,
+    tickets: state.tickets.ticketList,
     AllUsers: state.user.allUsers,
-    ticketTotalPages: state.user.ticketTotalPages
+    ticketListTotalRecords: state.tickets.ticketListTotalRecords
   }
 }
 

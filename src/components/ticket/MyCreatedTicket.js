@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Table, Space, message, Popconfirm } from 'antd';
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { startDeleteTicket, startReadAllTicket } from "./TicketAction";
+import { startDeleteTicket, startReadAllMyCreatedTicket } from "./TicketAction";
 import { apiError, apiSuccess, startReadAllUser } from "../user/UserAction";
 
 class MyCreatedTicket extends React.Component {
@@ -26,7 +26,7 @@ class MyCreatedTicket extends React.Component {
   }
 
   fetchTicketRecords = (page) => {
-    this.props.dispatch(startReadAllTicket(page,this.perPage))
+    this.props.dispatch(startReadAllMyCreatedTicket(page, this.perPage, this.props.userId))
   }
 
   onDeleteRecord = (id) => {
@@ -96,14 +96,14 @@ class MyCreatedTicket extends React.Component {
       },
     ];
    
-    const data = this.props.tickets.map((item) => ({
+    const data = this.props.tickets ? this.props.tickets.map((item) => ({
       key: item._id,
       title: item.title,
       description: item.description,
       owner: item.owner,
       assigned_to: item.assigned_to,
       status: item.status
-    }));
+    })): [];
 
     return (
       <div className="content-container">
@@ -117,7 +117,7 @@ class MyCreatedTicket extends React.Component {
           loading={this.props.isLoading}
           pagination={{
             pageSize: this.perPage,
-            total: this.props.ticketTotalPages,
+            total: this.props.myCreatedTicketsTotalRecords,
             onChange: (page) => {
               this.fetchTicketRecords(page)
             }
@@ -130,12 +130,14 @@ class MyCreatedTicket extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    tickets: state.tickets.filter(ticket => ticket.owner === state.user.user._id),
+    // tickets: state.tickets.filter(ticket => ticket.owner === state.user.user._id),
+    tickets: state.tickets.myCreatedTickets,
+    userId: state.user.user._id,
     isLoading: state.user.isLoading,
     apiSuccess: state.user.success,
     apiError: state.user.error,
     AllUsers: state.user.allUsers,
-    ticketTotalPages: state.user.ticketTotalPages
+    myCreatedTicketsTotalRecords: state.tickets.myCreatedTicketsTotalRecords
   }
 };
 

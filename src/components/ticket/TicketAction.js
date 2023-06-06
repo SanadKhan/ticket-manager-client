@@ -1,14 +1,13 @@
 import { ticketApi } from ".";
 import { apiError, apiSuccess, setLoading } from "../user/UserAction";
-import { paginationTotalPages } from "../user/UserAction";
 
 export const readAllTicket = (data) => ({
     type: 'READALL_TICKET',
     payload: data
 });
 
-export const ticketListTotalPages = (data) => ({
-    type: 'TICKETLIST_TOTALPAGES',
+export const ticketListTotalRecords = (data) => ({
+    type: 'TICKETLIST_TOTALRECORDS',
     payload: data
 });
 
@@ -18,7 +17,7 @@ export const startReadAllTicket = (page=1, perPage=10) => {
         ticketApi.readAllTicket(page, perPage)
             .then((res) => {
                 dispatch(readAllTicket(res.data.ticket))
-                dispatch(ticketListTotalPages(res.data.totalPages))
+                dispatch(ticketListTotalRecords(res.data.ticketRecords))
             }).catch((err) => {
                 dispatch(apiError(err.response.data.msgText));
                 console.log("Axios Error", err);
@@ -32,18 +31,18 @@ export const readAllMyCreatedTicket = (data) => ({
     payload: data
 });
 
-export const myCreatedTicketTotalPages = (data) => ({
-    type: 'MYCREATEDTICKET_TOTALPAGES',
+export const myCreatedTicketTotalRecords = (data) => ({
+    type: 'MYCREATEDTICKET_TOTALRECORDS',
     payload: data
 });
 
-export const startReadAllMyCreatedTicket = (id, page=1, perPage=10) => {
+export const startReadAllMyCreatedTicket = (page=1, perPage=10, id) => {
     return (dispatch) => {
         dispatch(setLoading(true))
-        ticketApi.readAllFilteredTicket(id, page, perPage)
+        ticketApi.readAllCreatedTicket(page, perPage, id)
             .then((res) => {
                 dispatch(readAllMyCreatedTicket(res.data.ticket))
-                dispatch(myCreatedTicketTotalPages(res.data.totalPages))
+                dispatch(myCreatedTicketTotalRecords(res.data.ticketRecords))
             }).catch((err) => {
                 dispatch(apiError(err.response.data.msgText));
                 console.log("Axios Error", err);
@@ -57,18 +56,18 @@ export const readAllMyAssignedTicket = (data) => ({
     payload: data
 });
 
-export const myAssignedTicketTotalPages = (data) => ({
-    type: 'MYASSIGNEDTICKET_TOTALPAGES',
+export const myAssignedTicketTotalRecords = (data) => ({
+    type: 'MYASSIGNEDTICKET_TOTALRECORDS',
     payload: data
 });
 
-export const startReadAllMyAssignedTicket = (id, page=1, perPage=10) => {
+export const startReadAllMyAssignedTicket = (page=1, perPage=10, id) => {
     return (dispatch) => {
         dispatch(setLoading(true))
-        ticketApi.readAllFilteredTicket(id, page, perPage)
+        ticketApi.readAllAssignedTicket(page, perPage, id)
             .then((res) => {
                 dispatch(readAllMyAssignedTicket(res.data.ticket))
-                dispatch(myAssignedTicketTotalPages(res.data.totalPages))
+                dispatch(myAssignedTicketTotalRecords(res.data.ticketRecords))
             }).catch((err) => {
                 dispatch(apiError(err.response.data.msgText));
                 console.log("Axios Error", err);
@@ -118,12 +117,18 @@ export const startUpdateTicket = (ticketData, ticketId) => {
     }
 }
 
+const updateTicketStatus = (data, id) => ({
+    type: 'UPDATE_TICKET_STATUS',
+    id,
+    payload: data
+});
+
 export const startUpdateTicketStatus = (ticketData, ticketId) => {
     return (dispatch) => {
         dispatch(setLoading(true))
         ticketApi.updateTicketStatus(ticketData, ticketId)
             .then((res) => {
-                dispatch(updateTicket(res.data, ticketId))
+                dispatch(updateTicketStatus(res.data, ticketId))
                 dispatch(apiSuccess("Updated Successfully!"))
             }).catch((err) => {
                 dispatch(apiError(err.response.data.msgText))

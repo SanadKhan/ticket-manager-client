@@ -4,7 +4,8 @@ import { connect } from "react-redux";
 import { startUpdateTicket } from "./TicketAction";
 
 const EditTicket = (props) => (
-    <TicketForm title="Edit Ticket"
+    <TicketForm
+        title="Edit Ticket"
         ticket={props.ticket}
         ticketFiles={props.ticket.ticket_files.length ? props.ticket.ticket_files : []}
         OnSubmit={(ticket) => {
@@ -16,7 +17,7 @@ const EditTicket = (props) => (
 
 const mapStateToProps = (state, props) => {
     return {
-        ticket: state.tickets.find((ticket) => ticket._id === props.match.params.id)
+        ticket: state.tickets.myCreatedTickets.find((ticket) => ticket._id === props.match.params.id)
     }
 };
 export default connect(mapStateToProps)(EditTicket);

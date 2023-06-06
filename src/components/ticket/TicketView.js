@@ -7,7 +7,7 @@ const TicketView = (props) => {
     if (ticketOwner) ticketOwner = ticketOwner.name || "NA"
     let ticketAssgiendTo = props.AllUsers && props.AllUsers.find(({ _id }) => _id === props.ticket.assigned_to)
     if (ticketAssgiendTo) ticketAssgiendTo = ticketAssgiendTo.name || "NA"
-    
+    console.log("ticket view props", props);
     return (
         <div className="content-container">
             <h1>Ticket Details  </h1>
@@ -36,7 +36,7 @@ const TicketView = (props) => {
 
 const mapStateToProps = (state, props) => {
     return {
-        ticket: state.tickets.find(ticket => ticket._id === props.match.params.id),
+        ticket: state.tickets.ticketList.find(ticket => ticket._id === props.match.params.id),
         AllUsers: state.user.allUsers
     }
 }
