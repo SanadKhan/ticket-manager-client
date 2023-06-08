@@ -19,7 +19,7 @@ export const startReadAllTicket = (page=1, perPage=10) => {
                 dispatch(readAllTicket(res.data.ticket))
                 dispatch(ticketListTotalRecords(res.data.ticketRecords))
             }).catch((err) => {
-                dispatch(apiError(err.response.data.msgText));
+                // dispatch(apiError(err.response.data.msgText));
                 console.log("Axios Error", err);
             })
         dispatch(setLoading(false))

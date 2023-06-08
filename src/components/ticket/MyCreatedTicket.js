@@ -9,18 +9,18 @@ class MyCreatedTicket extends React.Component {
   
   perPage = 5;
   componentDidMount() {
-    // this.props.dispatch(startReadAllTicket());
     this.fetchTicketRecords(1);
     this.props.dispatch(startReadAllUser());
   }
 
   componentDidUpdate() {
     if (this.props.apiSuccess) {
+      this.fetchTicketRecords(1);
       message.success(this.props.apiSuccess)
       this.props.dispatch(apiSuccess(null))
     }
     if (this.props.apiError) {
-      message.success(this.props.apiError)
+      message.error(this.props.apiError)
       this.props.dispatch(apiError(null))
     }
   }

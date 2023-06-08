@@ -24,9 +24,7 @@ const TicketView = (props) => {
                 <Descriptions.Item label="Status">{props.ticket.status}</Descriptions.Item>
                 <Descriptions.Item label="Snaps">{props.ticket.ticket_files.length ?
                     props.ticket.ticket_files.map((ticketImage) => (
-                        <Space size={50}>
-                            <Image width={200} height={200} src={ticketImage.url} alt="ticketImage" />
-                        </Space>
+                        <Image key={ticketImage.fileId}  width={200} height={200} src={ticketImage.url} alt="ticketImage" />
                     )) : `No snapshot available!`}
                 </Descriptions.Item>
             </Descriptions>
