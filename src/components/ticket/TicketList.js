@@ -2,23 +2,24 @@ import React from "react";
 import { Table, Space } from 'antd';
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { startReadAllTicket } from "./TicketAction";
+import { readAllTicket, startReadAllTicket, ticketListTotalRecords } from "./TicketAction";
 import { startReadAllUser } from "../user/UserAction";
 
 class TicketList extends React.Component {
 
   perPage = 5;
+
   componentDidMount() {
-    // this.props.dispatch(startReadAllTicket());
     this.fetchTicketRecords(1);
     this.props.dispatch(startReadAllUser());
     console.log("mounted tciket count", this.props)
   }
 
   fetchTicketRecords = (page) => {
-    this.props.dispatch(startReadAllTicket(page,this.perPage))
+    this.props.dispatch(startReadAllTicket('all', page, this.perPage))
   }
 
+  
   render() {
 
     const columns = [

@@ -11,65 +11,19 @@ export const ticketListTotalRecords = (data) => ({
     payload: data
 });
 
-export const startReadAllTicket = (page=1, perPage=10) => {
+export const startReadAllTicket = (ticketType='all', page=1, perPage=10) => {
     return (dispatch) => {
         dispatch(setLoading(true))
-        ticketApi.readAllTicket(page, perPage)
+        ticketApi.readAllTicket({ ticketType }, page, perPage)
             .then((res) => {
                 dispatch(readAllTicket(res.data.ticket))
                 dispatch(ticketListTotalRecords(res.data.ticketRecords))
             }).catch((err) => {
+                if (err.response.status === 404) {
+                    dispatch(readAllTicket(null));
+                    dispatch(ticketListTotalRecords(null));
+                } 
                 // dispatch(apiError(err.response.data.msgText));
-                console.log("Axios Error", err);
-            })
-        dispatch(setLoading(false))
-    }
-};
-
-export const readAllMyCreatedTicket = (data) => ({
-    type: 'READALL_MYCREATEDTICKET',
-    payload: data
-});
-
-export const myCreatedTicketTotalRecords = (data) => ({
-    type: 'MYCREATEDTICKET_TOTALRECORDS',
-    payload: data
-});
-
-export const startReadAllMyCreatedTicket = (page=1, perPage=10, id) => {
-    return (dispatch) => {
-        dispatch(setLoading(true))
-        ticketApi.readAllCreatedTicket(page, perPage, id)
-            .then((res) => {
-                dispatch(readAllMyCreatedTicket(res.data.ticket))
-                dispatch(myCreatedTicketTotalRecords(res.data.ticketRecords))
-            }).catch((err) => {
-                dispatch(apiError(err.response.data.msgText));
-                console.log("Axios Error", err);
-            })
-        dispatch(setLoading(false))
-    }
-};
-
-export const readAllMyAssignedTicket = (data) => ({
-    type: 'READALL_MYASSIGNEDTICKET',
-    payload: data
-});
-
-export const myAssignedTicketTotalRecords = (data) => ({
-    type: 'MYASSIGNEDTICKET_TOTALRECORDS',
-    payload: data
-});
-
-export const startReadAllMyAssignedTicket = (page=1, perPage=10, id) => {
-    return (dispatch) => {
-        dispatch(setLoading(true))
-        ticketApi.readAllAssignedTicket(page, perPage, id)
-            .then((res) => {
-                dispatch(readAllMyAssignedTicket(res.data.ticket))
-                dispatch(myAssignedTicketTotalRecords(res.data.ticketRecords))
-            }).catch((err) => {
-                dispatch(apiError(err.response.data.msgText));
                 console.log("Axios Error", err);
             })
         dispatch(setLoading(false))
@@ -117,18 +71,13 @@ export const startUpdateTicket = (ticketData, ticketId) => {
     }
 }
 
-const updateTicketStatus = (data, id) => ({
-    type: 'UPDATE_TICKET_STATUS',
-    id,
-    payload: data
-});
-
 export const startUpdateTicketStatus = (ticketData, ticketId) => {
     return (dispatch) => {
+        console.log("inside ticket status");
         dispatch(setLoading(true))
         ticketApi.updateTicketStatus(ticketData, ticketId)
             .then((res) => {
-                dispatch(updateTicketStatus(res.data, ticketId))
+                dispatch(updateTicket(res.data, ticketId))
                 dispatch(apiSuccess("Updated Successfully!"))
             }).catch((err) => {
                 dispatch(apiError(err.response.data.msgText))

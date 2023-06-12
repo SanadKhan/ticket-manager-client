@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Table, Space, message, Popconfirm } from 'antd';
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { startDeleteTicket, startReadAllMyCreatedTicket } from "./TicketAction";
+import { startDeleteTicket, startReadAllTicket } from "./TicketAction";
 import { apiError, apiSuccess, startReadAllUser } from "../user/UserAction";
 
 class MyCreatedTicket extends React.Component {
@@ -15,7 +15,6 @@ class MyCreatedTicket extends React.Component {
 
   componentDidUpdate() {
     if (this.props.apiSuccess) {
-      this.fetchTicketRecords(1);
       message.success(this.props.apiSuccess)
       this.props.dispatch(apiSuccess(null))
     }
@@ -26,7 +25,7 @@ class MyCreatedTicket extends React.Component {
   }
 
   fetchTicketRecords = (page) => {
-    this.props.dispatch(startReadAllMyCreatedTicket(page, this.perPage, this.props.userId))
+    this.props.dispatch(startReadAllTicket('created', page, this.perPage))
   }
 
   onDeleteRecord = (id) => {
@@ -117,7 +116,7 @@ class MyCreatedTicket extends React.Component {
           loading={this.props.isLoading}
           pagination={{
             pageSize: this.perPage,
-            total: this.props.myCreatedTicketsTotalRecords,
+            total: this.props.ticketListTotalRecords,
             onChange: (page) => {
               this.fetchTicketRecords(page)
             }
@@ -130,14 +129,12 @@ class MyCreatedTicket extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    // tickets: state.tickets.filter(ticket => ticket.owner === state.user.user._id),
-    tickets: state.tickets.myCreatedTickets,
-    userId: state.user.user._id,
+    tickets: state.tickets.ticketList,
     isLoading: state.user.isLoading,
     apiSuccess: state.user.success,
     apiError: state.user.error,
     AllUsers: state.user.allUsers,
-    myCreatedTicketsTotalRecords: state.tickets.myCreatedTicketsTotalRecords
+    ticketListTotalRecords: state.tickets.ticketListTotalRecords
   }
 };
 

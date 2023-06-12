@@ -17,7 +17,7 @@ const EditTicket = (props) => (
 
 const mapStateToProps = (state, props) => {
     return {
-        ticket: state.tickets.myCreatedTickets.find((ticket) => ticket._id === props.match.params.id)
+        ticket: state.tickets.ticketList.find((ticket) => ticket._id === props.match.params.id)
     }
 };
 export default connect(mapStateToProps)(EditTicket);

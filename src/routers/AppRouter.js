@@ -12,9 +12,6 @@ const AppRouter = () => (
         <div>
             <Header />
             <Switch>
-                {/* <Route path="/" component={Login} exact={true} />
-                <Route path="/register" component={Register} />
-                <Route path="/list" component={TicketList} /> */}
                 <PublicRoute path="/" component={Login} exact={true} />
                 <PublicRoute path="/register" component={Register} />
                 <PrivateRoute path="/list" component={TicketList} />
@@ -29,4 +26,34 @@ const AppRouter = () => (
     </BrowserRouter>
 );
 
+
 export default AppRouter;
+
+// export let socket = null;
+// const { pathname } = useLocation();
+//    const user = useSelector(state => state.user);
+ 
+//    useEffect(() => {
+//      if(user.authToken){
+//        if(!socket){
+//          socket = io(endpointBaseUrl, {
+//            query: {
+//              token: user.authToken
+//            }
+//          });
+//        }
+ 
+//        socket.on('connect', () => {
+//          socket.emit('register', {id: socket.id});
+//        });
+//      }else{
+//        if(socket){
+//          socket.disconnect();
+//          socket = null;
+//        }
+//      }
+ 
+//      socket && socket.on('error', function(err) {
+//        console.log('The server sent an error', err);
+//      });
+//    }, [user.authToken, user.name, user.id, user.email]);

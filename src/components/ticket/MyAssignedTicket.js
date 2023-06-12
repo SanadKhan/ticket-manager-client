@@ -1,8 +1,8 @@
 import React from "react";
-import { Table, Space, Form, Select, message } from 'antd';
+import { Table, Space, message } from 'antd';
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { startReadAllMyAssignedTicket, startUpdateTicketStatus } from "./TicketAction";
+import { startReadAllTicket, startUpdateTicketStatus } from "./TicketAction";
 import { apiError, apiSuccess, startReadAllUser } from "../user/UserAction";
 import { ticketStatusOptions } from "../../utils/constant";
 
@@ -10,14 +10,12 @@ class MyAssignedTicket extends React.Component {
 
   perPage = 5;
   componentDidMount() {
-    // this.props.dispatch(startReadAllTicket());
     this.fetchTicketRecords(1);
     this.props.dispatch(startReadAllUser());
   }
 
   componentDidUpdate() {
     if (this.props.apiSuccess) {
-      // this.props.dispatch(startReadAllMyAssignedTicket());
       this.fetchTicketRecords(1);
       message.success(this.props.apiSuccess);
       this.props.dispatch(apiSuccess(null));
@@ -29,7 +27,7 @@ class MyAssignedTicket extends React.Component {
   }
 
   fetchTicketRecords = (page) => {
-    this.props.dispatch(startReadAllMyAssignedTicket(page, this.perPage, this.props.userId))
+    this.props.dispatch(startReadAllTicket('assigned', page, this.perPage))
   }
 
   render() {
@@ -121,7 +119,7 @@ class MyAssignedTicket extends React.Component {
           loading={this.props.isLoading}
           pagination={{
             pageSize: this.perPage,
-            total: this.props.myAssignedTicketsTotalRecords,
+            total: this.props.ticketListTotalRecords,
             onChange: (page) => {
               this.fetchTicketRecords(page)
             }
@@ -134,14 +132,13 @@ class MyAssignedTicket extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    // tickets: state.tickets.filter((ticket) => ticket.assigned_to === state.user.user._id),
-    tickets: state.tickets.myAssignedTickets,
+    tickets: state.tickets.ticketList,
     userId: state.user.user._id,
     isLoading: state.user.isLoading,
     AllUsers: state.user.allUsers,
     apiSuccess: state.user.success,
     apiError: state.user.error,
-    myAssignedTicketsTotalRecords: state.tickets.myAssignedTicketsTotalRecords
+    ticketListTotalRecords: state.tickets.ticketListTotalRecords
   }
 };
 
