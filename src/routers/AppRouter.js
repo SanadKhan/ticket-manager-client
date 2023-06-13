@@ -6,28 +6,79 @@ import { MyAssignedTicket, MyCreatedTicket, TicketList, AddTicket, EditTicket, T
 import { NotFoundPage } from "../components/common";
 import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
+import { connect } from "react-redux";
+import { io } from "socket.io-client";
 
-const AppRouter = () => (
-    <BrowserRouter >
-        <div>
-            <Header />
-            <Switch>
-                <PublicRoute path="/" component={Login} exact={true} />
-                <PublicRoute path="/register" component={Register} />
-                <PrivateRoute path="/list" component={TicketList} />
-                <PrivateRoute path="/myassignedtickets" component={MyAssignedTicket} />
-                <PrivateRoute path="/mycreatedtickets" component={MyCreatedTicket} />
-                <PrivateRoute path="/ticket/add" component={AddTicket} />
-                <PrivateRoute path="/ticket/edit/:id" component={EditTicket} />
-                <PrivateRoute path="/ticket/view/:id" component={TicketView} />
-                <Route component={NotFoundPage} />
-            </Switch>
-        </div>
-    </BrowserRouter>
-);
+export let socket = null;
+
+class AppRouter extends React.Component {
+
+    componentDidUpdate() {
+        console.log("componenet update App router");
+        if (this.props.user) {
+            if (!socket) socket = io(process.env.API_BASE_URL);
+        } else {
+            if (socket) {
+                socket.disconnect();
+                socket = null
+            }
+        }
+        socket && socket.on('error', function(err) {
+            console.log('The server sent an error', err);
+        });
+    }
+    
+    render() {
+        return (
+            <BrowserRouter >
+                <div>
+                    <Header />
+                    <Switch>
+                        <PublicRoute path="/" component={Login} exact={true} />
+                        <PublicRoute path="/register" component={Register} />
+                        <PrivateRoute path="/list" component={TicketList} />
+                        <PrivateRoute path="/myassignedtickets" component={MyAssignedTicket} />
+                        <PrivateRoute path="/mycreatedtickets" component={MyCreatedTicket} />
+                        <PrivateRoute path="/ticket/add" component={AddTicket} />
+                        <PrivateRoute path="/ticket/edit/:id" component={EditTicket} />
+                        <PrivateRoute path="/ticket/view/:id" component={TicketView} />
+                        <Route component={NotFoundPage} />
+                    </Switch>
+                </div>
+            </BrowserRouter>
+        )
+    } 
+}
+
+const mapStateToProps = (state) => {
+    return {
+        user: state.user.isAuthUser
+    }
+};
+
+export default connect(mapStateToProps)(AppRouter);
+
+// const AppRouter = () => (
+//     <BrowserRouter >
+//         <div>
+//             <Header />
+//             <Switch>
+//                 <PublicRoute path="/" component={Login} exact={true} />
+//                 <PublicRoute path="/register" component={Register} />
+//                 <PrivateRoute path="/list" component={TicketList} />
+//                 <PrivateRoute path="/myassignedtickets" component={MyAssignedTicket} />
+//                 <PrivateRoute path="/mycreatedtickets" component={MyCreatedTicket} />
+//                 <PrivateRoute path="/ticket/add" component={AddTicket} />
+//                 <PrivateRoute path="/ticket/edit/:id" component={EditTicket} />
+//                 <PrivateRoute path="/ticket/view/:id" component={TicketView} />
+//                 <Route component={NotFoundPage} />
+//             </Switch>
+//         </div>
+//     </BrowserRouter>
+// );
 
 
-export default AppRouter;
+// export default AppRouter;
 
 // export let socket = null;
 // const { pathname } = useLocation();

@@ -48,7 +48,7 @@ class TicketList extends React.Component {
         key: "owner",
         render: (owner) => {
           const ownername = this.props.AllUsers && this.props.AllUsers.find(({ _id }) => _id === owner)
-          return ownername.name || "NA"
+          return ownername ? ownername.name : "NA"
         }
       },
       {
@@ -57,7 +57,7 @@ class TicketList extends React.Component {
         key: "assigned_to",
         render: (assigned_to) => {
           const ownername = this.props.AllUsers && this.props.AllUsers.find(({ _id }) => _id === assigned_to)
-          return ownername.name || "NA"
+          return ownername ? ownername.name : "NA"
         }
       },
       {

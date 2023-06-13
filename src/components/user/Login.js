@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Button, Form, Input, message } from 'antd';
 import { connect } from "react-redux";
 import { startUserLogin, apiError, apiSuccess } from "./UserAction";
-import { io } from "socket.io-client";
+// import { io } from "socket.io-client";
 
 class Login extends React.Component {
 
@@ -23,7 +23,7 @@ class Login extends React.Component {
   }
 
   render() {
-    const socket = io(process.env.API_BASE_URL)
+    // const socket = io(process.env.API_BASE_URL)
     return (
       <Form
         name="basic"
