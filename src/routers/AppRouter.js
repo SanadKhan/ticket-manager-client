@@ -8,6 +8,7 @@ import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
 import { connect } from "react-redux";
 import { io } from "socket.io-client";
+import { message } from "antd";
 
 export let socket = null;
 
@@ -23,6 +24,9 @@ class AppRouter extends React.Component {
                 socket = null
             }
         }
+        socket.on('message', (msg) => {
+            message.info(msg);
+        });
         socket && socket.on('error', function(err) {
             console.log('The server sent an error', err);
         });
