@@ -18,15 +18,21 @@ class AppRouter extends React.Component {
         console.log("componenet update App router");
         if (this.props.user) {
             if (!socket) socket = io(process.env.API_BASE_URL);
+
+            socket.on('connect', () => {
+                socket.emit('register', { socketId: socket.id, userId: this.props.user });
+            })
+
+            socket.on('message', (msg) => {
+                message.info(msg);
+            });
         } else {
             if (socket) {
                 socket.disconnect();
                 socket = null
             }
         }
-        socket.on('message', (msg) => {
-            message.info(msg);
-        });
+       
         socket && socket.on('error', function(err) {
             console.log('The server sent an error', err);
         });
@@ -56,7 +62,7 @@ class AppRouter extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        user: state.user.isAuthUser
+        user: state.user.user && state.user.user._id 
     }
 };
 
