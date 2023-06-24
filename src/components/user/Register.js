@@ -1,8 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button, Form, Input, message } from 'antd';
-import { apiError, apiSuccess, startAddUser } from "./UserAction";
+import { apiError, startAddUser } from "./UserAction";
 import { connect } from "react-redux";
+import { passwordValidator, textFieldValidator, validateEmail } from "../../utils/helper";
 
 class Register extends React.Component {
 
@@ -48,16 +49,7 @@ class Register extends React.Component {
                   message: 'Please input your name!',
                 },
                 {
-                  validator: (_, value) => {
-                    if (value) {
-                      if (value.length >= 3) {
-                        return Promise.resolve();
-                      }
-                    }
-                    return Promise.reject(
-                      new Error("Must be atleast 3 chars")
-                    )
-                  },
+                  validator: textFieldValidator
                 }
               ]}
             >
@@ -69,13 +61,12 @@ class Register extends React.Component {
               name="email"
               rules={[
                 {
-                  type: 'email',
-                  message: 'The input is not valid E-mail!'
-                },
-                {
                   required: true,
                   message: 'Please input your email!',
                 },
+                {
+                  validator: validateEmail
+                }
               ]}
             >
               <Input placeholder="Enter Email" />
@@ -90,16 +81,7 @@ class Register extends React.Component {
                   message: 'Please input your password!',
                 },
                 {
-                  validator: (_, value) => {
-                    if (value) {
-                      if (value.length >= 6) {
-                        return Promise.resolve();
-                      }
-                    }
-                    return Promise.reject(
-                      new Error("Must be atleast 6 chars")
-                    )
-                  }
+                  validator: passwordValidator
                 }
               ]}
             >

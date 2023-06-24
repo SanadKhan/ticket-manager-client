@@ -5,6 +5,7 @@ import { UploadOutlined } from '@ant-design/icons';
 import { apiError, startReadAllUser } from "../user/UserAction";
 import { connect } from "react-redux";
 import { ticketStatusOptions } from "../../utils/constant";
+import { textFieldValidator } from "../../utils/helper";
 
 class TicketForm extends React.Component {
 
@@ -107,16 +108,7 @@ class TicketForm extends React.Component {
                   message: 'Please input your title!',
                 },
                 {
-                  validator: (_, value) => {
-                    if (value) {
-                      if (value.length >= 3) {
-                        return Promise.resolve();
-                      }
-                    }
-                    return Promise.reject(
-                      new Error("Must be atleast three chars")
-                    )
-                  },
+                  validator: textFieldValidator
                 }
               ]}
             >
@@ -132,16 +124,7 @@ class TicketForm extends React.Component {
                   message: 'Please input your description!',
                 },
                 {
-                  validator: (_, value) => {
-                    if (value) {
-                      if (value.length >= 3) {
-                        return Promise.resolve();
-                      }
-                    }
-                    return Promise.reject(
-                      new Error("Must be atleast three chars")
-                    )
-                  },
+                  validator: textFieldValidator
                 }
               ]}
             >
@@ -151,12 +134,6 @@ class TicketForm extends React.Component {
             <Form.Item
               label="Assigned To"
               name="assigned_to"
-              rules={[
-                {
-                  required: true,
-                  message: 'Please Assign ticket!',
-                },
-              ]}
             >
               <Select placeholder="Select Option">
                 {this.props.userOptions && this.props.userOptions.map((user) =>

@@ -2,8 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Button, Form, Input, message } from 'antd';
 import { connect } from "react-redux";
-import { startUserLogin, apiError, apiSuccess } from "./UserAction";
-// import { io } from "socket.io-client";
+import { startUserLogin, apiError } from "./UserAction";
+import { validateEmail } from "../../utils/helper";
 
 class Login extends React.Component {
 
@@ -23,7 +23,7 @@ class Login extends React.Component {
   }
 
   render() {
-    // const socket = io(process.env.API_BASE_URL)
+
     return (
       <Form
         name="basic"
@@ -42,13 +42,12 @@ class Login extends React.Component {
               name="email"
               rules={[
                 {
-                  type: 'email',
-                  message: 'The input is not valid E-mail!'
-                },
-                {
                   required: true,
                   message: 'Please input your username!',
                 },
+                {
+                  validator: validateEmail
+                }
               ]}
             >
               <Input placeholder="Enter Email Address" />
