@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Table, Space, message } from 'antd';
 import { Link } from "react-router-dom";
 import { connect, useDispatch, useSelector } from "react-redux";
@@ -23,8 +23,8 @@ const MyAssignedTicket = () => {
   }, []);
 
   useEffect(() => {
+    console.log("inside update")
     if (isApiSuccess) {
-      // fetchTicketRecords(1); // uncomment this if not rendered
       message.success(isApiSuccess);
       dispatch(apiSuccess(null));
     }
@@ -32,9 +32,7 @@ const MyAssignedTicket = () => {
       message.error(isApiError);
       dispatch(apiError(null));
     }
-    // fetchTicketRecords(1);  // comment this later
-    // dispatch(startReadAllUser()); 
-  }, [isApiSuccess, isApiError]);
+  }, [isApiSuccess, isApiError, tickets]);
 
   const fetchTicketRecords = (page) => {
     dispatch(startReadAllTicket('assigned', page, perPage))
@@ -85,10 +83,11 @@ const MyAssignedTicket = () => {
       render: (text, record) => (
         <div>
           {record.status === 'Completed' ? record.status :
-            <select style={{ padding: "7px" }} name="status" value={record.status} onChange={(e) => {
-              const data = { status: e.target.value }
-              dispatch(startUpdateTicketStatus(data, record.key))
-            }}>
+            <select style={{ padding: "7px" }} name="status" defaultValue={record.status}
+              onChange={(e) => {
+                const data = { status: e.target.value }
+                dispatch(startUpdateTicketStatus(data, record.key))
+              }}>
               {ticketStatusOptions.map((status) =>
                 <option value={status.id}>{status.value}</option>
               )}
@@ -135,7 +134,7 @@ const MyAssignedTicket = () => {
       />
     </div>
   );
-} 
+}
 
 export default MyAssignedTicket;
 
