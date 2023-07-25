@@ -1,15 +1,22 @@
 import React from "react";
 import TicketForm from "./TicketForm";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { startAddTicket } from "./TicketAction";
+import { useHistory } from "react-router-dom";
 
-const AddTicket = (props) => (
-    <TicketForm
-        title="Add Ticket"
-        OnSubmit={(ticket) => {
-            props.dispatch(startAddTicket(ticket))
-            props.history.push('/mycreatedtickets')
-        }} />
-);
+const AddTicket = () => {
+    const dispatch = useDispatch();
+    const history = useHistory();
+    return (
+        <TicketForm
+            title="Add Ticket"
+            OnSubmit={(ticket) => {
+                dispatch(startAddTicket(ticket));
+                // return <Redirect to="/mycreatedtickets" />
+                history.push('/mycreatedtickets')
+            }} />
+    )
+};
 
-export default connect()(AddTicket);
+export default AddTicket;
+// export default connect()(AddTicket);
