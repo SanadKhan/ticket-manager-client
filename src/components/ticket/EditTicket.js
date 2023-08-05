@@ -1,6 +1,6 @@
 import React from "react";
 import TicketForm from "./TicketForm";
-import { connect, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { startUpdateTicket } from "./TicketAction";
 import { useParams, useHistory } from 'react-router-dom';
 
@@ -13,7 +13,7 @@ const EditTicket = () => {
         <TicketForm
             title="Edit Ticket"
             ticket={ticket}
-            ticketFiles={ticket.ticket_files.length ? ticket.ticket_files : []}
+            ticketFiles={ticket.ticket_files.length && ticket.ticket_files}
             OnSubmit={(ticketData) => {
                 dispatch(startUpdateTicket(ticketData, ticket._id))
                 history.push('/mycreatedtickets')
@@ -23,9 +23,3 @@ const EditTicket = () => {
 };
 
 export default EditTicket;
-// const mapStateToProps = (state, props) => {
-//     return {
-//         ticket: state.tickets.ticketList.find((ticket) => ticket._id === props.match.params.id)
-//     }
-// };
-// export default connect(mapStateToProps)(EditTicket);

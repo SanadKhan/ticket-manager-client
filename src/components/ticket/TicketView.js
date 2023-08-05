@@ -37,10 +37,3 @@ const TicketView = () => {
 }
 
 export default TicketView;
-// const mapStateToProps = (state, props) => {
-//     return {
-//         ticket: state.tickets.ticketList.find(ticket => ticket._id === props.match.params.id),
-//         AllUsers: state.user.allUsers
-//     }
-// }
-// export default connect(mapStateToProps)(TicketView);
