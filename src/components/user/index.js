@@ -1,9 +1,11 @@
 import Login from "./Login";
 import Register from "./Register";
-import * as UserApi from "./userApi";
+import * as userApi from "./userApi";
+import rootReducer from "./rootReducer";
 
 export {
     Login,
     Register,
-    UserApi
+    userApi,
+    rootReducer
 }

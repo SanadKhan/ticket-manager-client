@@ -4,19 +4,29 @@ import "normalize.css/normalize.css";
 import './styles/styles.scss';
 import AppRouter from "./routers/AppRouter";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { ReactQueryDevtools } from 'react-query/devtools'
+import { ReactQueryDevtools } from 'react-query/devtools';
+import configureStore from "./store/configureStore";
+import { Provider } from "react-redux";
 
+const store = configureStore();
 const queryClient = new QueryClient();
 
 const jsx = (
-    <QueryClientProvider client={queryClient}>
-        <AppRouter />
-        <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    <Provider store={store}>
+        <QueryClientProvider client={queryClient}>
+            <AppRouter />
+        </QueryClientProvider>
+    </Provider>
 );
 
-const root = createRoot(document.getElementById('app'))
-root.render(jsx)
+createRoot(document.getElementById('app')).render(jsx);
+
+createRoot(document.getElementById('devtools')).render(
+    <ReactQueryDevtools initialIsOpen={false} />
+)
+
+// const root = createRoot(document.getElementById('app'))
+// root.render(jsx)
 
 // reduxcode
 // import React from "react";

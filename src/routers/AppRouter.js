@@ -13,7 +13,7 @@ import { message } from "antd";
 export let socket = null;
 
 const AppRouter = () => {
-    const userId = useSelector(state => state.user.user && state.user.user._id);
+    const userId = useSelector(state => state.user && state.user._id);
     useEffect(() => {
         if (userId) {
             if (!socket) socket = io(process.env.API_BASE_URL);

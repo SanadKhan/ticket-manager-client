@@ -1,25 +1,25 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button, Form, Input, message } from 'antd';
-import { useDispatch, useSelector } from "react-redux";
-import { startUserLogin, apiError } from "./UserAction";
 import { validateEmail } from "../../utils/helper";
+import { userApi } from ".";
+import { useDispatch } from "react-redux";
 
-const Login = () => { 
-  
+const Login = () => {
   const dispatch = useDispatch();
-  const isApiError = useSelector(state => state.user.error);
-  const isLoading = useSelector(state => state.user.isLoading);
-
-  useEffect(() => {
-    if (isApiError) {
-      message.error(isApiError);
-      dispatch(apiError(null));  //clear msgs for if else msg
-    }
-  }, [isApiError]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const onFinish = (values) => {
-    dispatch(startUserLogin(values));
+    setIsLoading(true);
+    userApi.login(values)
+      .then(res => {
+        setIsLoading(false);
+        dispatch({ type: "LOGIN_SUCCESS", payload: res});
+      }).catch(err => {
+        setIsLoading(false);
+        message.error(err.response.data.msgText)
+      });
+    // setIsLoading(false);
   }
 
   const onFinishFailed = (error) => {
@@ -71,7 +71,7 @@ const Login = () => {
           <Form.Item>
             <Button disabled={isLoading}
               type="primary" htmlType="submit" size="large">
-              Submit
+              {isLoading ? 'Loading...' : 'Submit'}
             </Button>
             <p className="user-form-account-text"> Don't have an account?
               <Link to="/register"> Register! </Link>
@@ -81,7 +81,7 @@ const Login = () => {
       </div>
     </Form>
   )
-} 
+}
 
 export default Login;
 
@@ -95,7 +95,7 @@ export default Login;
 // import { startUserLogin, apiError } from "./UserAction";
 // import { validateEmail } from "../../utils/helper";
 
-// const Login = () => { 
+// const Login = () => {
 
 //   const dispatch = useDispatch();
 //   const isApiError = useSelector(state => state.user.error);
@@ -171,6 +171,6 @@ export default Login;
 //       </div>
 //     </Form>
 //   )
-// } 
+// }
 
 // export default Login;

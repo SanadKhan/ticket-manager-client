@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Menu } from 'antd';
 import { Link } from 'react-router-dom';
-import { startUserLogout } from '../user/UserAction';
 import { useDispatch, useSelector } from 'react-redux';
+import { userApi } from '../user';
 
 const Header = () => {
-  const isAuthUser = useSelector(state => state.user.isAuthUser);
+  const isAuthUser = useSelector(state => state.isAuthUser);
   const dispatch = useDispatch();
   const [current, setCurrent] = useState('alltickets');
 
@@ -37,6 +37,12 @@ const Header = () => {
   ];
 
   const onMenuClick = (e) => setCurrent(e.key);
+
+  const handleLogout = () => {
+    userApi.logout();
+    dispatch({ type: "LOGOUT_SUCCESS" })
+    window.location = '/';
+  }
   
   if (!isAuthUser) return null
   return (
@@ -49,10 +55,7 @@ const Header = () => {
       </div>
       <div className='navbar-logout'>
         <Menu className="navbar-menu-box"
-          onClick={() => {
-            dispatch(startUserLogout())
-            window.location = '/'
-          }}
+          onClick={handleLogout}
           selectedKeys={current} items={logoutMenu} />
       </div>
     </div>

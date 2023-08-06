@@ -4,23 +4,32 @@ import { Button, Form, Input, message } from 'antd';
 import { apiError, startAddUser } from "./UserAction";
 import { useDispatch, useSelector } from "react-redux";
 import { passwordValidator, textFieldValidator, validateEmail } from "../../utils/helper";
+import { useMutation, useQueryClient } from "react-query";
+import { userApi } from ".";
 
 const Register = () => {
 
   const dispatch = useDispatch();
-  const isApiError = useSelector(state => state.user.error);
-  const isLoading = useSelector(state => state.user.isLoading);
-
-  useEffect(() => {
-    if (isApiError) {
-      message.error(isApiError);
-      dispatch(apiError(null));  //clear msgs for if else msg
+  // const [isLoading, setIsLoading] = useState(false);
+  const queryClient = useQueryClient();
+  const userRegistration = useMutation({
+    mutationFn: userApi.create,
+    onSuccess: data => {
+      queryClient.setQueryData(["users", data._id], data)
+      dispatch({ type: "LOGIN_SUCCESS", payload: data });
     }
-  }, [isApiError]);
-
+  })
   const onFinish = (values) => {
-    dispatch(startAddUser(values));
-  };
+
+    userRegistration.mutate(values);
+    // UserApi.login(values)
+    //   .then(res => {
+    //     setIsLoading(false);
+    //     dispatch({ type: "LOGIN_SUCCESS", payload: res.data });
+    //   }).catch(err => {
+    //     message.error(err.response.data.msgText)
+    // })
+  }
 
   const onFinishFailed = (err) => {
     console.log("Failed", err);
@@ -91,8 +100,8 @@ const Register = () => {
           </Form.Item>
 
           <Form.Item>
-            <Button disabled={isLoading} type="primary" htmlType="submit" size="large">
-              Submit
+            <Button disabled={userRegistration.isLoading} type="primary" htmlType="submit" size="large">
+              {userRegistration.isLoading ? "Loading ..." : "Submit"}
             </Button>
             <p className="user-form-account-text"> Already have an account?
               <Link to="/"> Login! </Link>
