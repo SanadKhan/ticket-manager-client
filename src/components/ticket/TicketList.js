@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Table, Space } from 'antd';
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { startReadAllTicket } from "./TicketAction";
+import { startReadAllTicket, ticketListTotalRecords } from "./TicketAction";
 import { startReadAllUser } from "../user/UserAction";
 import { useQuery } from "react-query";
 import { userApi } from "../user";
@@ -11,7 +11,12 @@ import { ticketApi } from ".";
 const TicketList = () => {
   const dispatch = useDispatch();
   const username = useSelector(state => state.user.name);
+  const perPage = useSelector(state => state.perPage);
   const [page, setPage] = useState(1);
+  const [tickets, setTickets] = useState([]);
+  const [ticketsCount, setTicketsCount] = useState(5);
+  const type = 'all';
+  
   // const isLoading = useSelector(state => state.user.isLoading);
   // const tickets = useSelector(state => state.tickets.ticketList);
   // const AllUsers = useSelector(state => state.user.allUsers);
@@ -25,11 +30,18 @@ const TicketList = () => {
   });
   console.log("all users", AllUsers);
   
-  const { data:tickets, isLoading } = useQuery({
-    queryKey: ["tickets", page],
-    queryFn: () => ticketApi.readAllTicket(page, 5, 'all')
+  const ticketQuery = useQuery({
+    queryKey: ["tickets",page, perPage, type],
+    queryFn: () => ticketApi.readAllTicket(page, perPage, type),
+    onSuccess: data => {
+      console.log("ticket", data.ticket)
+      console.log("ticket records", data.ticketRecords)
+      setTickets(data.ticket);
+      setTicketsCount(data.ticketRecords);
+    }
   });
-  console.log("tickets", tickets);
+  // const { ticket, ticketRecords } = ticketQuery.data;
+  console.log("tickets", ticketQuery.data);
   // useEffect(() => {
   //   fetchTicketRecords(1);
   //   dispatch(startReadAllUser());
@@ -93,14 +105,18 @@ const TicketList = () => {
     },
   ];
 
-  const data = tickets ?  tickets.map((item) => ({
+  const data = tickets.map((item) => ({
     key: item._id,
     title: item.title,
     description: item.description,
     owner: item.owner,
     assigned_to: item.assigned_to,
     status: item.status
-  })) : [];
+  }));
+
+  console.log("tickets", tickets);
+  console.log("tickets records", ticketsCount);
+
 
   return (
     <div className="content-container">
@@ -109,10 +125,10 @@ const TicketList = () => {
       <Table
         columns={columns}
         dataSource={data}
-        loading={isLoading}
+        loading={ticketQuery.isLoading}
         pagination={{ 
           pageSize: 5,
-          total: 5,
+          total: ticketsCount,
           onChange: (page) => {
             // fetchTicketRecords(page)
             setPage(page)

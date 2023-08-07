@@ -1,34 +1,24 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import { Button, Form, Input, message } from 'antd';
-import { apiError, startAddUser } from "./UserAction";
-import { useDispatch, useSelector } from "react-redux";
+import { Button, Form, Input } from 'antd';
+import { useDispatch } from "react-redux";
 import { passwordValidator, textFieldValidator, validateEmail } from "../../utils/helper";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation } from "react-query";
 import { userApi } from ".";
 
 const Register = () => {
 
   const dispatch = useDispatch();
-  // const [isLoading, setIsLoading] = useState(false);
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
   const userRegistration = useMutation({
     mutationFn: userApi.create,
     onSuccess: data => {
-      queryClient.setQueryData(["users", data._id], data)
+      // queryClient.setQueryData(["users", data._id], data)
       dispatch({ type: "LOGIN_SUCCESS", payload: data });
     }
   })
   const onFinish = (values) => {
-
     userRegistration.mutate(values);
-    // UserApi.login(values)
-    //   .then(res => {
-    //     setIsLoading(false);
-    //     dispatch({ type: "LOGIN_SUCCESS", payload: res.data });
-    //   }).catch(err => {
-    //     message.error(err.response.data.msgText)
-    // })
   }
 
   const onFinishFailed = (err) => {

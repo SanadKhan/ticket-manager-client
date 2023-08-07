@@ -4,7 +4,7 @@ export const readAllTicket = (page, perPage, filter) => {
     console.log("inside readall api", filter, page, perPage);
     return privateInstance
         .post(`/v1/admin/ticket?p=${page}&r=${perPage}`, {ticketType: filter})
-        .then(res => res.data.ticket);
+        .then(res => res.data);
 };
 
 export const create = (ticketData) => {
