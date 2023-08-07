@@ -12,6 +12,12 @@ export const readAll = () => {
         .then(res => res.data.user);
 }
 
+export const read = (id) => {
+    return privateInstance
+        .get(`/v1/admin/user/${id}`)
+        .then(res => res.data.user);
+};
+
 export const login = (data) => {
     return publicInstance
         .post('/v1/admin/user/login', data)
@@ -21,6 +27,3 @@ export const login = (data) => {
 export const logout = () => {
     return privateInstance.post('/v1/admin/user/logout');
 };
-
-//wth redux
-// sst logout = () => privateInstance.post('/v1/admin/user/logout');

@@ -1,7 +1,6 @@
 import { privateInstance } from "../../request/request";
 
 export const readAllTicket = (page, perPage, filter) => {
-    console.log("inside readall api", filter, page, perPage);
     return privateInstance
         .post(`/v1/admin/ticket?p=${page}&r=${perPage}`, {ticketType: filter})
         .then(res => res.data);
@@ -14,9 +13,10 @@ export const create = (ticketData) => {
 };
 
 export const read = (id) => {
+    console.log("id", id);
     return privateInstance
-        .get(`/v1/admin/ticket/${id}`)
-        .then(res => res.data);
+        .get(`/v1/admin/ticket/read/${id}`)
+        .then(res => res.data.ticket);
 };
 
 export const update = (ticketData, ticketId) => {
