@@ -1,42 +1,43 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { Button, Table, Space, message, Popconfirm } from 'antd';
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { startDeleteTicket, startReadAllTicket } from "./TicketAction";
-import { apiError, apiSuccess, startReadAllUser } from "../user/UserAction";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { userApi } from "../user";
+import { ticketApi } from ".";
 
 const MyCreatedTicket = () => {
-  const dispatch = useDispatch();
-  const isLoading = useSelector(state => state.user.isLoading);
-  const tickets = useSelector(state => state.tickets.ticketList);
-  const AllUsers = useSelector(state => state.user.allUsers);
-  const isApiSuccess = useSelector(state => state.user.success);
-  const isApiError = useSelector(state => state.user.error);
-  const ticketListTotalRecords = useSelector(state => state.tickets.ticketListTotalRecords);
-  const perPage = useSelector(state => state.tickets.perPage);
+  const perPage = useSelector(state => state.perPage);
+  const [page, setPage] = useState(1);
+  const [tickets, setTickets] = useState([]);
+  const [ticketsCount, setTicketsCount] = useState(5);
+  const type = 'created';
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    fetchTicketRecords(1);
-    dispatch(startReadAllUser());
-  }, []);
+  const { data: AllUsers } = useQuery({
+    queryKey: ["users"],
+    queryFn: userApi.readAll
+  });
 
-  useEffect(() => {
-    if (isApiSuccess) {
-      message.success(isApiSuccess);
-      dispatch(apiSuccess(null));
+  const ticketQuery = useQuery({
+    queryKey: ["tickets", page, perPage, type],
+    queryFn: () => ticketApi.readAllTicket(page, perPage, type),
+    onSuccess: data => {
+      setTickets(data.ticket);
+      setTicketsCount(data.ticketRecords);
     }
-    if (isApiError) {
-      message.error(isApiError);
-      dispatch(apiError(null));
-    }
-  }, [isApiSuccess, isApiError]);
+  });
 
-  const fetchTicketRecords = (page) => {
-    dispatch(startReadAllTicket('created', page, perPage))
-  }
+  const deleteTicketMutation = useMutation({
+    mutationFn: ticketApi.remove,
+    onSuccess: data => {
+      queryClient.invalidateQueries("tickets")
+      message.success("Deleted Successfully!")
+    }
+  })
 
   const onDeleteRecord = (id) => {
-    dispatch(startDeleteTicket(id))
+    deleteTicketMutation.mutate(id);
   }
 
   const columns = [
@@ -73,8 +74,8 @@ const MyCreatedTicket = () => {
       dataIndex: "assigned_to",
       key: "assigned_to",
       render: (assigned_to) => {
-        const ownername = AllUsers && AllUsers.find(({ _id }) => _id === assigned_to)
-        return ownername ? ownername.name : "NA"
+        const assignedname = AllUsers && AllUsers.find(({ _id }) => _id === assigned_to)
+        return assignedname ? assignedname.name : "NA"
       }
     },
     {
@@ -100,14 +101,14 @@ const MyCreatedTicket = () => {
     },
   ];
  
-  const data = tickets ? tickets.map((item) => ({
+  const data = tickets.map((item) => ({
     key: item._id,
     title: item.title,
     description: item.description,
     owner: item.owner,
     assigned_to: item.assigned_to,
     status: item.status
-  })): [];
+  }));
 
   return (
     <div className="content-container">
@@ -118,12 +119,12 @@ const MyCreatedTicket = () => {
       <Table
         columns={columns}
         dataSource={data}
-        loading={isLoading}
+        loading={ticketQuery.isLoading}
         pagination={{
           pageSize: perPage,
-          total: ticketListTotalRecords,
+          total: ticketsCount,
           onChange: (page) => {
-            fetchTicketRecords(page)
+            setPage(page)
           }
         }}
       />

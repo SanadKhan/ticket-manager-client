@@ -13,7 +13,6 @@ export const create = (ticketData) => {
 };
 
 export const read = (id) => {
-    console.log("id", id);
     return privateInstance
         .get(`/v1/admin/ticket/read/${id}`)
         .then(res => res.data.ticket);
@@ -28,7 +27,7 @@ export const update = (ticketData, ticketId) => {
 export const updateTicketStatus = (ticketData, ticketId) => {
     return privateInstance
         .post(`/v1/admin/ticket/updateTicketStatus/${ticketId}`, ticketData)
-        .then(res => { ticketData: res.data, ticketId });
+        // .then(res => { ticketData: res.data, ticketId });
 };
 
 export const remove = (id) => {

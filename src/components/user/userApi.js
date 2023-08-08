@@ -14,7 +14,7 @@ export const readAll = () => {
 
 export const read = (id) => {
     return privateInstance
-        .get(`/v1/admin/user/${id}`)
+        .get(`/v1/admin/user/read/${id}`)
         .then(res => res.data.user);
 };
 
