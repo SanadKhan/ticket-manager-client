@@ -1,18 +1,27 @@
 import React from "react";
 import TicketForm from "./TicketForm";
-import { useDispatch } from "react-redux";
-import { startAddTicket } from "./TicketAction";
 import { useHistory } from "react-router-dom";
+import { useMutation } from "react-query";
+import { ticketApi } from ".";
+import { message } from "antd";
 
 const AddTicket = () => {
-    const dispatch = useDispatch();
     const history = useHistory();
+    const createTicketMutation = useMutation({
+        mutationFn: ticketApi.create
+    });
     return (
         <TicketForm
             title="Add Ticket"
             OnSubmit={(ticket) => {
-                dispatch(startAddTicket(ticket));
-                history.push('/mycreatedtickets')
+                createTicketMutation.mutate(ticket, {
+                    onSuccess: () => {
+                        message.success("Ticket Added Successfully!")
+                        history.push('/mycreatedtickets')
+                    }
+                })
+                // dispatch(startAddTicket(ticket));
+                // history.push('/mycreatedtickets')
             }} />
     )
 };

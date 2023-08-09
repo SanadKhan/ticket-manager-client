@@ -34,7 +34,7 @@ const MyAssignedTicket = () => {
 
   const updateTicketStatusMutation = useMutation({
     mutationFn: ticketApi.updateTicketStatus,
-    onSuccess: data => {
+    onSuccess: () => {
       queryClient.invalidateQueries("tickets")
       message.success("Updated Successfully!")
     }
@@ -88,7 +88,7 @@ const MyAssignedTicket = () => {
             <select style={{ padding: "7px" }} name="status" defaultValue={record.status}
               onChange={(e) => {
                 const data = { status: e.target.value }
-                updateTicketStatusMutation.mutate(data, record.key)
+                updateTicketStatusMutation.mutate({ ticketData: data, ticketId: record.key })
               }}>
               {ticketStatusOptions.map((status) =>
                 <option key={ status.id } value={status.id}>{status.value}</option>

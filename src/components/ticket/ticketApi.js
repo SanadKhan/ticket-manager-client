@@ -24,7 +24,8 @@ export const update = (ticketData, ticketId) => {
         .then(res => { ticketData: res.data, ticketId});
 };
 
-export const updateTicketStatus = (ticketData, ticketId) => {
+export const updateTicketStatus = ({ticketData, ticketId}) => {
+    console.log("updateTicketStatus api", ticketData, ticketId);
     return privateInstance
         .post(`/v1/admin/ticket/updateTicketStatus/${ticketId}`, ticketData)
         // .then(res => { ticketData: res.data, ticketId });

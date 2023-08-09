@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Table, Space, message, Popconfirm } from 'antd';
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { userApi } from "../user";
 import { ticketApi } from ".";
