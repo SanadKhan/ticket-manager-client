@@ -18,7 +18,7 @@ export const read = (id) => {
         .then(res => res.data.ticket);
 };
 
-export const update = (ticketData, ticketId) => {
+export const update = ({ticketData, ticketId}) => {
     return privateInstance
         .post(`/v1/admin/ticket/update/${ticketId}`, ticketData)
         .then(res => { ticketData: res.data, ticketId});
