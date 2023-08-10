@@ -25,8 +25,6 @@ const AddTicket = () => {
                         history.push('/mycreatedtickets')
                     }
                 })
-                // dispatch(startAddTicket(ticket));
-                // history.push('/mycreatedtickets')
             }} />
     )
 };

@@ -10,23 +10,25 @@ const TicketList = () => {
   const username = useSelector(state => state.user.name);
   const perPage = useSelector(state => state.perPage);
   const [page, setPage] = useState(1);
-  const [tickets, setTickets] = useState([]);
-  const [ticketsCount, setTicketsCount] = useState(5);
   const type = 'all';
 
   const { data: AllUsers } = useQuery({
     queryKey: ["users"],
     queryFn: userApi.readAll
   });
-  
-  const ticketQuery = useQuery({
+
+  const { data: ticketQuery, isLoading, isError, error } = useQuery({
     queryKey: ["tickets",page, perPage, type],
     queryFn: () => ticketApi.readAllTicket(page, perPage, type),
-    onSuccess: data => {
-      setTickets(data.ticket);
-      setTicketsCount(data.ticketRecords);
-    }
   });
+
+  if (isLoading) {
+    return <span>Loading...</span>
+  }
+
+  if (isError) {
+      return <span>Error: {error.message}</span>
+  }
 
   const columns = [
     {
@@ -81,8 +83,8 @@ const TicketList = () => {
       )
     },
   ];
-
-  const data = tickets.map((item) => ({
+  console.log("tickets", ticketQuery.ticket);
+  const data = ticketQuery.ticket.map((item) => ({
     key: item._id,
     title: item.title,
     description: item.description,
@@ -98,10 +100,10 @@ const TicketList = () => {
       <Table
         columns={columns}
         dataSource={data}
-        loading={ticketQuery.isLoading}
+        loading={isLoading}
         pagination={{ 
           pageSize: perPage,
-          total: ticketsCount,
+          total: ticketQuery.ticketRecords,
           onChange: (page) => {
             setPage(page)
           }

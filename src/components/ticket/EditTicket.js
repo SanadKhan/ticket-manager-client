@@ -1,24 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
 import TicketForm from "./TicketForm";
 import { useParams, useHistory } from 'react-router-dom';
 import { ticketApi } from ".";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import { message } from "antd";
 
 const EditTicket = () => {
     const history = useHistory();
     const { id } = useParams();
     const queryClient = useQueryClient();
-    const [ ticketFiles, setTicketFiles ] = useState([])
 
-    const { data: ticket, status, error } = useQuery({
+    const { data: ticket, isLoading, isError, error } = useQuery({
         queryKey: ["ticket", id],
         queryFn: () => ticketApi.read(id),
-        onSuccess: data => {
-            if (data.ticket_files.length) {
-                console.log("ticketfiles", data.ticket_files)
-                setTicketFiles(data.ticket_files);
-            }
-        }
     });
 
     const updateTicketStatusMutation = useMutation({
@@ -28,14 +22,19 @@ const EditTicket = () => {
         }
     })
 
+    if (isLoading) {
+        return <span>Loading...</span>
+    }
+
+    if (isError) {
+        return <span>Error: {error.message}</span>
+    }
+
     return (
-        // <div>
-        //     <h1>Edi ticke</h1>
-        //     </div>
         <TicketForm
             title="Edit Ticket"
             ticket={ticket}
-            ticketFiles={ticketFiles}
+            ticketFiles={ ticket.ticket_files && ticket.ticket_files }
             OnSubmit={(ticketData) => {
                 updateTicketStatusMutation.mutate({ ticketData, ticketId: ticket._id }, {
                     onSuccess: () => {
