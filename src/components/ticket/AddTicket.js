@@ -15,6 +15,7 @@ const AddTicket = () => {
             queryClient.invalidateQueries("tickets")
         }
     });
+
     return (
         <TicketForm
             title="Add Ticket"
@@ -25,7 +26,8 @@ const AddTicket = () => {
                         history.push('/mycreatedtickets')
                     }
                 })
-            }} />
+            }}
+        />
     )
 };
 

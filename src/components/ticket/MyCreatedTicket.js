@@ -9,8 +9,6 @@ import { ticketApi } from ".";
 const MyCreatedTicket = () => {
   const perPage = useSelector(state => state.perPage);
   const [page, setPage] = useState(1);
-  const [tickets, setTickets] = useState([]);
-  const [ticketsCount, setTicketsCount] = useState(5);
   const type = 'created';
   const queryClient = useQueryClient();
 
@@ -19,25 +17,24 @@ const MyCreatedTicket = () => {
     queryFn: userApi.readAll
   });
 
-  const ticketQuery = useQuery({
+  const { data: ticketQuery, isLoading, isError, error } = useQuery({
     queryKey: ["tickets", page, perPage, type],
     queryFn: () => ticketApi.readAllTicket(page, perPage, type),
-    onSuccess: data => {
-      setTickets(data.ticket);
-      setTicketsCount(data.ticketRecords);
-    }
   });
 
   const deleteTicketMutation = useMutation({
     mutationFn: ticketApi.remove,
-    onSuccess: data => {
+    onSuccess: () => {
       queryClient.invalidateQueries("tickets")
-      message.success("Deleted Successfully!")
     }
-  })
+  });
 
-  const onDeleteRecord = (id) => {
-    deleteTicketMutation.mutate(id);
+  if (isLoading) {
+    return <span>Loading...</span>
+  }
+
+  if (isError) {
+    return <span>Error: {error.message}</span>
   }
 
   const columns = [
@@ -92,7 +89,11 @@ const MyCreatedTicket = () => {
           <Link to={`/ticket/edit/${record.key}`} className="table-column table-edit"> Edit </Link>
           <Popconfirm
             title="Are you sure?"
-            onConfirm={() => onDeleteRecord(record.key)}
+            onConfirm={() => deleteTicketMutation.mutate(record.key, {
+              onSuccess: () => {
+                message.success("Deleted Successfully!")
+              }
+            })}
           >
             <span className="table-column table-delete">Delete</span>
           </Popconfirm>
@@ -100,8 +101,8 @@ const MyCreatedTicket = () => {
       )
     },
   ];
- 
-  const data = tickets.map((item) => ({
+
+  const data = ticketQuery.ticket.map((item) => ({
     key: item._id,
     title: item.title,
     description: item.description,
@@ -119,10 +120,10 @@ const MyCreatedTicket = () => {
       <Table
         columns={columns}
         dataSource={data}
-        loading={ticketQuery.isLoading}
+        loading={isLoading}
         pagination={{
           pageSize: perPage,
-          total: ticketsCount,
+          total: ticketQuery.ticketRecords,
           onChange: (page) => {
             setPage(page)
           }
@@ -130,6 +131,6 @@ const MyCreatedTicket = () => {
       />
     </div>
   );
-} 
+}
 
 export default MyCreatedTicket;

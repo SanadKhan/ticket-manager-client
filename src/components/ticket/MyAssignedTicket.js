@@ -1,36 +1,17 @@
 import React, { useState } from "react";
 import { Table, Space, message } from 'antd';
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { startReadAllTicket, startUpdateTicketStatus } from "./TicketAction";
-import { apiError, apiSuccess, startReadAllUser } from "../user/UserAction";
+import { useSelector } from "react-redux";
 import { ticketStatusOptions } from "../../utils/constant";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { userApi } from "../user";
 import { ticketApi } from ".";
 
 const MyAssignedTicket = () => {
-  const dispatch = useDispatch();
   const perPage = useSelector(state => state.perPage);
   const [page, setPage] = useState(1);
-  // const [tickets, setTickets] = useState([]);
-  // const [ticketsCount, setTicketsCount] = useState(5);
   const type = 'assigned';
   const queryClient = useQueryClient();
-
-  // const { data: AllUsers } = useQuery({
-  //   queryKey: ["users"],
-  //   queryFn: userApi.readAll
-  // });
-  
-  // const ticketQuery = useQuery({
-  //   queryKey: ["tickets", page, perPage, type],
-  //   queryFn: () => ticketApi.readAllTicket(page, perPage, type),
-  //   onSuccess: data => {
-  //     setTickets(data.ticket);
-  //     setTicketsCount(data.ticketRecords);
-  //   }
-  // });
 
   const { data: AllUsers } = useQuery({
     queryKey: ["users"],
@@ -42,6 +23,13 @@ const MyAssignedTicket = () => {
     queryFn: () => ticketApi.readAllTicket(page, perPage, type),
   });
 
+  const updateTicketStatusMutation = useMutation({
+    mutationFn: ticketApi.updateTicketStatus,
+    onSuccess: () => {
+      queryClient.invalidateQueries("tickets")
+    }
+  });
+
   if (isLoading) {
     return <span>Loading...</span>
   }
@@ -49,14 +37,6 @@ const MyAssignedTicket = () => {
   if (isError) {
       return <span>Error: {error.message}</span>
   }
-
-  const updateTicketStatusMutation = useMutation({
-    mutationFn: ticketApi.updateTicketStatus,
-    onSuccess: () => {
-      queryClient.invalidateQueries("tickets")
-      message.success("Updated Successfully!")
-    }
-  }) 
 
   const columns = [
     {
@@ -106,7 +86,11 @@ const MyAssignedTicket = () => {
             <select style={{ padding: "7px" }} name="status" defaultValue={record.status}
               onChange={(e) => {
                 const data = { status: e.target.value }
-                updateTicketStatusMutation.mutate({ ticketData: data, ticketId: record.key })
+                updateTicketStatusMutation.mutate({ ticketData: data, ticketId: record.key }, {
+                  onSuccess: () => {
+                    message.success("Updated Successfully!")
+                  }
+                })
               }}>
               {ticketStatusOptions.map((status) =>
                 <option key={ status.id } value={status.id}>{status.value}</option>

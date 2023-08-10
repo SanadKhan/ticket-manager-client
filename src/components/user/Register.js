@@ -9,14 +9,13 @@ import { userApi } from ".";
 const Register = () => {
 
   const dispatch = useDispatch();
-  // const queryClient = useQueryClient();
   const userRegistration = useMutation({
     mutationFn: userApi.create,
     onSuccess: data => {
-      // queryClient.setQueryData(["users", data._id], data)
       dispatch({ type: "LOGIN_SUCCESS", payload: data });
     }
   })
+  
   const onFinish = (values) => {
     userRegistration.mutate(values);
   }
