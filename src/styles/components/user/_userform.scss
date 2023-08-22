@@ -1,22 +1,30 @@
+@media only screen and (max-width: 600px){ 
+    .user-form-ticket {
+        // float: left;
+        // position: absolute;
+        // right: 0px;
+        width: 100% !important;
+        // border: 3px solid green;    
+        // padding: 20px;
+        // margin-left: 10px;
+        // margin: auto;    
+    }
+}
+
 .user-container {
     display: flex;
+    // background-color: aquamarine;
 }
 
 // .user-item {
 //     width: 50%;
 // }
 
-.user-form{
-    // width: 30%;
-    // text-align: center;
-    // justify-content: center;
-    // margin-top: 55px;
-    // margin-left: 115px !important;
-    
+.user-form {
     margin: auto;
-    width: 30%;
+    // width: 40%;
     padding: 10px;
-
+    // background-color: bisque;
 }
 
 // .user-form-register {
@@ -36,7 +44,7 @@
     width: 40%;
     // border: 3px solid green;
     padding: 10px;
-    margin-left: 30px;
+    margin-left: 10px;
     // margin: auto;    
 }
 
