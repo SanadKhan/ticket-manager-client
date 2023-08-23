@@ -16,6 +16,13 @@ const Header = () => {
   const mainMenu = [
     {
       label: (
+        <Link to="/list"> Ticket Manager </Link>
+      ),
+      key: 'brand',
+      className:'navbar-title'
+    },
+    {
+      label: (
         <Link to="/list"> All Tickets </Link>
       ),
       key: 'alltickets',
@@ -32,35 +39,23 @@ const Header = () => {
       ),
       key: 'mycreatedtickets',
     },
-  ];
-
-  const logoutMenu = [
     {
-      label: "Logout"
-    }
+      label: "Logout",
+      key: 'logout',
+      onClick: () => {
+        userApi.logout();
+        dispatch({ type: "LOGOUT_SUCCESS" })
+        window.location = '/';
+      },
+      className:'navbar-logout'
+    },
   ];
 
   const onMenuClick = (e) => setCurrent(e.key);
 
-  const handleLogout = () => {
-    userApi.logout();
-    dispatch({ type: "LOGOUT_SUCCESS" })
-    window.location = '/';
-  }
-
   if (!isAuthUser) return null
   return (
-    <div>
-      {/* Navbar brand name */}
-      <div style={{ float: 'left', margin: '16px', fontSize: '24px', fontWeight: 'bold' }}>
-        Ticket Manager
-      </div>
-      {/* Logout button */}
-      <div style={{ float: 'right', margin: '16px' }}>
-        <button onClick={() => console.log('Logout')}>Logout</button>
-      </div>
-      <Menu onClick={onMenuClick} selectedKeys={current} mode="horizontal" items={mainMenu} />
-    </div>
+    <Menu style={{ fontSize: '16px' }} onClick={onMenuClick} selectedKeys={current} mode="horizontal" items={mainMenu} />
   )
 }
 
@@ -78,4 +73,4 @@ export default Header;
           onClick={handleLogout}
           selectedKeys={current} items={logoutMenu} />
       </div> */}
-    // </div>
+    // </div
