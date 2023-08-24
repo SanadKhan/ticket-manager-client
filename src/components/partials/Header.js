@@ -60,17 +60,3 @@ const Header = () => {
 }
 
 export default Header;
-
-// <div className='navbar-container'>
-{/* <div className='navbar-brand'>
-        <Link to="/list" className='navbar-title'>Ticket Manager</Link>
-      </div> */}
-// <div className='navbar-menu'>
-// <Menu className="navbar-menu-box" onClick={onMenuClick} selectedKeys={current} mode="horizontal" items={mainMenu} />
-// </div>
-{/* <div className='navbar-logout'>
-        <Menu className="navbar-menu-box"
-          onClick={handleLogout}
-          selectedKeys={current} items={logoutMenu} />
-      </div> */}
-    // </div

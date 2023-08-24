@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import React, { lazy, useEffect } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { Header } from "../components/partials";
-import { Login, Register } from "../components/user";
-import { MyAssignedTicket, MyCreatedTicket, TicketList, AddTicket, EditTicket, TicketForm, TicketView } from "../components/ticket";
+import { Login } from "../components/user";
+import { MyAssignedTicket, MyCreatedTicket, TicketList, AddTicket, EditTicket, TicketView } from "../components/ticket";
 import { NotFoundPage } from "../components/common";
 import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
@@ -11,6 +11,8 @@ import { io } from "socket.io-client";
 import { message } from "antd";
 
 export let socket = null;
+
+
 
 const AppRouter = () => {
     const userId = useSelector(state => state.user && state.user._id);
@@ -36,6 +38,8 @@ const AppRouter = () => {
             console.log('The server sent an error', err);
         });
     }, [userId]);
+
+    const Register = lazy(() => import("../components/user"))
 
     return (
         <BrowserRouter >

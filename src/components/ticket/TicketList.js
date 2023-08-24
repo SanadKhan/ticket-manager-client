@@ -83,7 +83,7 @@ const TicketList = () => {
       )
     },
   ];
-  console.log("tickets", ticketQuery.ticket);
+  
   const data = ticketQuery.ticket.map((item) => ({
     key: item._id,
     title: item.title,
