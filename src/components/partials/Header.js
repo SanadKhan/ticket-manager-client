@@ -1,16 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Menu } from 'antd';
-import { Link } from 'react-router-dom';
-import { startUserLogout } from '../user/UserAction';
-import { connect } from 'react-redux';
+import { Link, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { userApi } from '../user';
 
-class Header extends React.Component {
+const Header = () => {
+  const isAuthUser = useSelector(state => state.isAuthUser);
+  const dispatch = useDispatch();
+  const location = useLocation();
+  
+  const { pathname } = location
+  const splitLocation = pathname.split("/");
+  const [current, setCurrent] = useState(splitLocation[1]);
 
-  state = {
-    current: 'alltickets'
-  }
-
-  mainMenu = [
+  const mainMenu = [
+    {
+      label: (
+        <Link to="/list"> Ticket Manager </Link>
+      ),
+      key: 'brand',
+      className:'navbar-title'
+    },
     {
       label: (
         <Link to="/list"> All Tickets </Link>
@@ -28,51 +38,24 @@ class Header extends React.Component {
         <Link to="/mycreatedtickets"> My Tickets </Link>
       ),
       key: 'mycreatedtickets',
-    }
-  ];
-
-  logoutMenu = [
+    },
     {
-      label: "Logout"
-    }
+      label: "Logout",
+      key: 'logout',
+      onClick: () => {
+        userApi.logout();
+        dispatch({ type: "LOGOUT_SUCCESS" })
+      },
+      className:'navbar-logout'
+    },
   ];
 
-  onMenuClick = (e) => {
-    const current = e.key
-    this.setState(() => ({ current }))
-  }
+  const onMenuClick = (e) => setCurrent(e.key);
 
-  render() {
-
-    if (!this.props.isAuthUser) return null
-    return (
-      <div className='navbar-container'>
-        <div className='navbar-brand'>
-          <Link to="/list" className='navbar-title'>Ticket Manager</Link>
-        </div>
-        <div className='navbar-menu'>
-          <Menu className="navbar-menu-box" onClick={this.onMenuClick} selectedKeys={this.state.current} mode="horizontal" items={this.mainMenu} />
-        </div>
-        <div className='navbar-logout'>
-          <Menu className="navbar-menu-box"
-            onClick={() => {
-              this.props.dispatch(startUserLogout())
-              window.location = '/'
-            }}
-            selectedKeys={this.state.current} items={this.logoutMenu} />
-        </div>
-      </div>
-    )
-  }
+  if (!isAuthUser) return null
+  return (
+    <Menu style={{ fontSize: '16px' }} onClick={onMenuClick} selectedKeys={current} mode="horizontal" items={mainMenu} />
+  )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    isAuthUser: state.user.isAuthUser
-  }
-};
-
-export default connect(mapStateToProps)(Header);
-
-
-
+export default Header;

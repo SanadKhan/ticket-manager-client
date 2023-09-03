@@ -1,5 +1,6 @@
 const ticketReducerDefaultState = {
     ticketList: null,
+    perPage: 5,
     ticketListTotalRecords: null
 };
 

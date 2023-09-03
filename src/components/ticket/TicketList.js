@@ -1,119 +1,116 @@
-import React from "react";
+import React, { useState } from "react";
 import { Table, Space } from 'antd';
 import { Link } from "react-router-dom";
-import { connect } from "react-redux";
-import { readAllTicket, startReadAllTicket, ticketListTotalRecords } from "./TicketAction";
-import { startReadAllUser } from "../user/UserAction";
+import { useSelector } from "react-redux";
+import { useQuery } from "react-query";
+import { userApi } from "../user";
+import { ticketApi } from ".";
 
-class TicketList extends React.Component {
+const TicketList = () => {
+  const username = useSelector(state => state.user.name);
+  const perPage = useSelector(state => state.perPage);
+  const [page, setPage] = useState(1);
+  const type = 'all';
 
-  perPage = 5;
+  const { data: AllUsers } = useQuery({
+    queryKey: ["users"],
+    queryFn: userApi.readAll
+  });
 
-  componentDidMount() {
-    this.fetchTicketRecords(1);
-    this.props.dispatch(startReadAllUser());
-    console.log("mounted tciket count", this.props)
+  const { data: ticketQuery, isLoading, isError, error } = useQuery({
+    queryKey: ["tickets",page, perPage, type],
+    queryFn: () => ticketApi.readAllTicket(page, perPage, type),
+  });
+
+  if (isLoading) {
+    return <span>Loading...</span>
   }
 
-  fetchTicketRecords = (page) => {
-    this.props.dispatch(startReadAllTicket('all', page, this.perPage))
+  if (isError) {
+      return <span>Error: {error.message}</span>
   }
 
+  const columns = [
+    {
+      title: "Sr No.",
+      dataIndex: "id",
+      key: "id",
+      render: (id, record, index) => {
+        ++index;
+        return index;
+      }
+    },
+    {
+      title: "Title",
+      dataIndex: "title",
+      key: "title"
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      key: "description"
+    },
+    {
+      title: "Assigned By",
+      dataIndex: "owner",
+      key: "owner",
+      render: (owner) => {
+        const ownername = AllUsers && AllUsers.find(({ _id }) => _id === owner)
+        return ownername ? ownername.name : "NA"
+      }
+    },
+    {
+      title: "Assigned To",
+      dataIndex: "assigned_to",
+      key: "assigned_to",
+      render: (assigned_to) => {
+        const ownername = AllUsers && AllUsers.find(({ _id }) => _id === assigned_to)
+        return ownername ? ownername.name : "NA"
+      }
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status"
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (text, record) => (
+        <Space size="small">
+          <Link to={`/ticket/view/${record.key}`} className="table-column"> View </Link>
+        </Space>
+      )
+    },
+  ];
   
-  render() {
+  const data = ticketQuery.ticket.map((item) => ({
+    key: item._id,
+    title: item.title,
+    description: item.description,
+    owner: item.owner,
+    assigned_to: item.assigned_to,
+    status: item.status
+  }));
 
-    const columns = [
-      {
-        title: "Sr No.",
-        dataIndex: "id",
-        key: "id",
-        render: (id, record, index) => {
-          ++index;
-          return index;
-        }
-      },
-      {
-        title: "Title",
-        dataIndex: "title",
-        key: "title"
-      },
-      {
-        title: "Description",
-        dataIndex: "description",
-        key: "description"
-      },
-      {
-        title: "Assigned By",
-        dataIndex: "owner",
-        key: "owner",
-        render: (owner) => {
-          const ownername = this.props.AllUsers && this.props.AllUsers.find(({ _id }) => _id === owner)
-          return ownername ? ownername.name : "NA"
-        }
-      },
-      {
-        title: "Assigned To",
-        dataIndex: "assigned_to",
-        key: "assigned_to",
-        render: (assigned_to) => {
-          const ownername = this.props.AllUsers && this.props.AllUsers.find(({ _id }) => _id === assigned_to)
-          return ownername ? ownername.name : "NA"
-        }
-      },
-      {
-        title: "Status",
-        dataIndex: "status",
-        key: "status"
-      },
-      {
-        title: "Action",
-        key: "action",
-        render: (text, record) => (
-          <Space size="small">
-            <Link to={`/ticket/view/${record.key}`} className="table-column"> View </Link>
-          </Space>
-        )
-      },
-    ];
-
-    const data = this.props.tickets ?  this.props.tickets.map((item) => ({
-      key: item._id,
-      title: item.title,
-      description: item.description,
-      owner: item.owner,
-      assigned_to: item.assigned_to,
-      status: item.status
-    })) : [];
-
-    return (
-      <div className="content-container">
-        <h2 className="welcome-message">Welcome, {this.props.username}</h2>
-        <h1>All Tickets</h1>
-        <Table
-          columns={columns}
-          dataSource={data}
-          loading={this.props.isLoading}
-          pagination={{ 
-            pageSize: this.perPage,
-            total: this.props.ticketListTotalRecords,
-            onChange: (page) => {
-              this.fetchTicketRecords(page)
-            }
-          }}
-        />
-      </div>
-    )
-  }
+  return (
+    <div className="content-container">
+      <h2 className="welcome-message">Welcome, {username}</h2>
+      <h1>All Tickets</h1>
+      <Table
+        columns={columns}
+        dataSource={data}
+        loading={isLoading}
+        pagination={{ 
+          pageSize: perPage,
+          total: ticketQuery.ticketRecords,
+          onChange: (page) => {
+            setPage(page)
+          }
+        }}
+      />
+    </div>
+  )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    username: state.user.user.name,
-    isLoading: state.user.isLoading,
-    tickets: state.tickets.ticketList,
-    AllUsers: state.user.allUsers,
-    ticketListTotalRecords: state.tickets.ticketListTotalRecords
-  }
-}
-
-export default connect(mapStateToProps)(TicketList);
+export default TicketList;

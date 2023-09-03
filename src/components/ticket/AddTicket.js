@@ -1,15 +1,34 @@
 import React from "react";
 import TicketForm from "./TicketForm";
-import { connect } from "react-redux";
-import { startAddTicket } from "./TicketAction";
+import { useHistory } from "react-router-dom";
+import { useMutation, useQueryClient } from "react-query";
+import { ticketApi } from ".";
+import { message } from "antd";
 
-const AddTicket = (props) => (
-    <TicketForm
-        title="Add Ticket"
-        OnSubmit={(ticket) => {
-            props.dispatch(startAddTicket(ticket))
-            props.history.push('/mycreatedtickets')
-        }} />
-);
+const AddTicket = () => {
+    const history = useHistory();
+    const queryClient = useQueryClient();
 
-export default connect()(AddTicket);
+    const createTicketMutation = useMutation({
+        mutationFn: ticketApi.create,
+        onSuccess: () => {
+            queryClient.invalidateQueries("tickets")
+        }
+    });
+
+    return (
+        <TicketForm
+            title="Add Ticket"
+            OnSubmit={(ticket) => {
+                createTicketMutation.mutate(ticket, {
+                    onSuccess: () => {
+                        message.success("Ticket Added Successfully!")
+                        history.push('/mycreatedtickets')
+                    }
+                })
+            }}
+        />
+    )
+};
+
+export default AddTicket;

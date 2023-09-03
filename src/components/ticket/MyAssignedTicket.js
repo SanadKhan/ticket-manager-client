@@ -1,145 +1,143 @@
-import React from "react";
+import React, { useState } from "react";
 import { Table, Space, message } from 'antd';
 import { Link } from "react-router-dom";
-import { connect } from "react-redux";
-import { startReadAllTicket, startUpdateTicketStatus } from "./TicketAction";
-import { apiError, apiSuccess, startReadAllUser } from "../user/UserAction";
+import { useSelector } from "react-redux";
 import { ticketStatusOptions } from "../../utils/constant";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { userApi } from "../user";
+import { ticketApi } from ".";
 
-class MyAssignedTicket extends React.Component {
+const MyAssignedTicket = () => {
+  const perPage = useSelector(state => state.perPage);
+  const [page, setPage] = useState(1);
+  const type = 'assigned';
+  const queryClient = useQueryClient();
 
-  perPage = 5;
-  componentDidMount() {
-    this.fetchTicketRecords(1);
-    this.props.dispatch(startReadAllUser());
-  }
+  const { data: AllUsers } = useQuery({
+    queryKey: ["users"],
+    queryFn: userApi.readAll
+  });
 
-  componentDidUpdate() {
-    if (this.props.apiSuccess) {
-      this.fetchTicketRecords(1);
-      message.success(this.props.apiSuccess);
-      this.props.dispatch(apiSuccess(null));
+  const { data: ticketQuery, isLoading, isError, error } = useQuery({
+    queryKey: ["tickets",page, perPage, type],
+    queryFn: () => ticketApi.readAllTicket(page, perPage, type),
+  });
+
+  const updateTicketStatusMutation = useMutation({
+    mutationFn: ticketApi.updateTicketStatus,
+    onSuccess: () => {
+      queryClient.invalidateQueries("tickets")
     }
-    if (this.props.apiError) {
-      message.error(this.props.apiError);
-      this.props.dispatch(apiError(null));
-    }
+  });
+
+  if (isLoading) {
+    return <span>Loading...</span>
   }
 
-  fetchTicketRecords = (page) => {
-    this.props.dispatch(startReadAllTicket('assigned', page, this.perPage))
+  if (isError) {
+      return <span>Error: {error.message}</span>
   }
 
-  render() {
-
-    const columns = [
-      {
-        title: "Sr No.",
-        dataIndex: "id",
-        key: "id",
-        render: (id, record, index) => {
-          ++index;
-          return index;
-        }
-      },
-      {
-        title: "Title",
-        dataIndex: "title",
-        key: "titles"
-      },
-      {
-        title: "Description",
-        dataIndex: "description",
-        key: "description"
-      },
-      {
-        title: "Assigned By",
-        dataIndex: "owner",
-        key: "owner",
-        render: (owner) => {
-          const ownername = this.props.AllUsers && this.props.AllUsers.find(({ _id }) => _id === owner)
-          return ownername ? ownername.name : "NA"
-        }
-      },
-      {
-        title: "Assigned To",
-        dataIndex: "assigned_to",
-        key: "assigned_to",
-        render: (assigned_to) => {
-          const ownername = this.props.AllUsers && this.props.AllUsers.find(({ _id }) => _id === assigned_to)
-          return ownername ? ownername.name : "NA"
-        }
-      },
-      {
-        title: "Status",
-        dataIndex: "status",
-        key: "status",
-        render: (text, record) => (
-          <div>
-            {record.status === 'Completed' ? record.status :
-              <select style={{ padding: "7px" }} name="status" value={record.status} onChange={(e) => {
-                const data = { status: e.target.value }
-                this.props.dispatch(startUpdateTicketStatus(data, record.key))
-              }}>
-                {ticketStatusOptions.map((status) =>
-                  <option value={status.id}>{status.value}</option>
-                )}
-              </select>
-            }
-          </div>
-        )
+  const columns = [
+    {
+      title: "Sr No.",
+      dataIndex: "id",
+      key: "id",
+      render: (id, record, index) => {
+        ++index;
+        return index;
       }
-      ,
-      {
-        title: "Action",
-        key: "action",
-        render: (text, record) => (
-          <Space size="small">
-            <Link to={`/ticket/view/${record.key}`} className="table-column"> View </Link>
-          </Space>
-        )
-      },
-    ];
+    },
+    {
+      title: "Title",
+      dataIndex: "title",
+      key: "titles"
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      key: "description"
+    },
+    {
+      title: "Assigned By",
+      dataIndex: "owner",
+      key: "owner",
+      render: (owner) => {
+        const ownername = AllUsers && AllUsers.find(({ _id }) => _id === owner)
+        return ownername ? ownername.name : "NA"
+      }
+    },
+    {
+      title: "Assigned To",
+      dataIndex: "assigned_to",
+      key: "assigned_to",
+      render: (assigned_to) => {
+        const ownername = AllUsers && AllUsers.find(({ _id }) => _id === assigned_to)
+        return ownername ? ownername.name : "NA"
+      }
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (text, record) => (
+        <div>
+          {record.status === 'Completed' ? record.status :
+            <select style={{ padding: "7px" }} name="status" defaultValue={record.status}
+              onChange={(e) => {
+                const data = { status: e.target.value }
+                updateTicketStatusMutation.mutate({ ticketData: data, ticketId: record.key }, {
+                  onSuccess: () => {
+                    message.success("Updated Successfully!")
+                  }
+                })
+              }}>
+              {ticketStatusOptions.map((status) =>
+                <option key={ status.id } value={status.id}>{status.value}</option>
+              )}
+            </select>
+          }
+        </div>
+      )
+    }
+    ,
+    {
+      title: "Action",
+      key: "action",
+      render: (text, record) => (
+        <Space size="small">
+          <Link to={`/ticket/view/${record.key}`} className="table-column"> View </Link>
+        </Space>
+      )
+    },
+  ];
 
-    const data = this.props.tickets ? this.props.tickets.map((item) => ({
-      key: item._id,
-      title: item.title,
-      description: item.description,
-      owner: item.owner,
-      assigned_to: item.assigned_to,
-      status: item.status
-    })) : [];
+  const data = ticketQuery.ticket.map((item) => ({
+    key: item._id,
+    title: item.title,
+    description: item.description,
+    owner: item.owner,
+    assigned_to: item.assigned_to,
+    status: item.status
+  }));
 
-    return (
-      <div className="content-container">
-        <h1>Tickets Assigned To Me</h1>
-        <Table
-          columns={columns}
-          dataSource={data}
-          loading={this.props.isLoading}
-          pagination={{
-            pageSize: this.perPage,
-            total: this.props.ticketListTotalRecords,
-            onChange: (page) => {
-              this.fetchTicketRecords(page)
-            }
-          }}
-        />
-      </div>
-    );
-  };
-};
+  return (
+    <div className="content-container">
+      <h1>Tickets Assigned To Me</h1>
+      <Table
+        columns={columns}
+        dataSource={data}
+        loading={isLoading}
+        pagination={{
+          pageSize: perPage,
+          total: ticketQuery.ticketRecords,
+          onChange: (page) => {
+            setPage(page)
+          }
+        }}
+      />
+    </div>
+  );
+}
 
-const mapStateToProps = (state) => {
-  return {
-    tickets: state.tickets.ticketList,
-    userId: state.user.user._id,
-    isLoading: state.user.isLoading,
-    AllUsers: state.user.allUsers,
-    apiSuccess: state.user.success,
-    apiError: state.user.error,
-    ticketListTotalRecords: state.tickets.ticketListTotalRecords
-  }
-};
-
-export default connect(mapStateToProps)(MyAssignedTicket);
+export default MyAssignedTicket;

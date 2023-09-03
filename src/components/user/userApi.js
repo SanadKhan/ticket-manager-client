@@ -1,9 +1,29 @@
 import { publicInstance, privateInstance } from "../../request/request";
 
-export const create = (userData) => publicInstance.post('/v1/admin/user/create', userData);
+export const create = (userData) => {
+    return publicInstance
+        .post('/v1/admin/user/create', userData)
+        .then(res => res.data);
+};
 
-export const readAll = () => publicInstance.get('/v1/admin/user');
+export const readAll = () => {
+    return publicInstance
+        .get('/v1/admin/user')
+        .then(res => res.data.user);
+}
 
-export const login = (data) => publicInstance.post('/v1/admin/user/login', data);
+export const read = (id) => {
+    return privateInstance
+        .get(`/v1/admin/user/read/${id}`)
+        .then(res => res.data.user);
+};
 
-export const logout = () => privateInstance.post('/v1/admin/user/logout');
+export const login = (data) => {
+    return publicInstance
+        .post('/v1/admin/user/login', data)
+        .then(res => res.data);
+};
+
+export const logout = () => {
+    return privateInstance.post('/v1/admin/user/logout');
+};
