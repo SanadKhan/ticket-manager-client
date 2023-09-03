@@ -2,6 +2,7 @@ import axios from "axios";
 
 export const endPointBaseUrl = process.env.API_BASE_URL || 'http://localhost:8000'
 
+console.log("baseurl", endPointBaseUrl, process.env.API_BASE_URL);
 export const publicInstance = axios.create({
     baseURL: endPointBaseUrl,
 });
