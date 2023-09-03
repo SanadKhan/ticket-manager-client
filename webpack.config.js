@@ -7,8 +7,8 @@ module.exports = {
         path: path.join(__dirname,'public'),
         filename: 'bundle.js'
     },
-    plugins: [
-        new Dotenv()
+    plugins: [  
+        new Dotenv({ systemvars: true })
     ],
     module: {
         rules: [{
