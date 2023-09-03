@@ -23,7 +23,6 @@ export const update = ({ticketData, ticketId}) => {
 };
 
 export const updateTicketStatus = ({ticketData, ticketId}) => {
-    console.log("updateTicketStatus api", ticketData, ticketId);
     return privateInstance
         .post(`/v1/admin/ticket/updateTicketStatus/${ticketId}`, ticketData);
 };

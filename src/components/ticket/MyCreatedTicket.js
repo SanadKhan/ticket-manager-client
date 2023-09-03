@@ -9,6 +9,8 @@ import { ticketApi } from ".";
 const MyCreatedTicket = () => {
   const perPage = useSelector(state => state.perPage);
   const [page, setPage] = useState(1);
+  const [data, setData] = useState([]);
+  const [total, setTotal] = useState(0);
   const type = 'created';
   const queryClient = useQueryClient();
 
@@ -17,9 +19,20 @@ const MyCreatedTicket = () => {
     queryFn: userApi.readAll
   });
 
-  const { data: ticketQuery, isLoading, isError, error } = useQuery({
+  const { isLoading, isError, error } = useQuery({
     queryKey: ["tickets", page, perPage, type],
     queryFn: () => ticketApi.readAllTicket(page, perPage, type),
+    onSuccess: (values) => {
+      setData(values.ticket.map((item) => ({
+        key: item._id,
+        title: item.title,
+        description: item.description,
+        owner: item.owner,
+        assigned_to: item.assigned_to,
+        status: item.status
+      })));
+      setTotal(values.ticketRecords);
+    }
   });
 
   const deleteTicketMutation = useMutation({
@@ -34,7 +47,7 @@ const MyCreatedTicket = () => {
   }
 
   if (isError) {
-    return <span>Error: {error.message}</span>
+    if (!error.response.data.msgText) return <span>Error: {error.message}</span>
   }
 
   const columns = [
@@ -102,15 +115,6 @@ const MyCreatedTicket = () => {
     },
   ];
 
-  const data = ticketQuery.ticket.map((item) => ({
-    key: item._id,
-    title: item.title,
-    description: item.description,
-    owner: item.owner,
-    assigned_to: item.assigned_to,
-    status: item.status
-  }));
-
   return (
     <div className="content-container">
       <h1>My Created Tickets</h1>
@@ -123,7 +127,7 @@ const MyCreatedTicket = () => {
         loading={isLoading}
         pagination={{
           pageSize: perPage,
-          total: ticketQuery.ticketRecords,
+          total,
           onChange: (page) => {
             setPage(page)
           }
