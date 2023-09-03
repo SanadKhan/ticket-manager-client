@@ -10,11 +10,11 @@ import { userApi } from "../user";
 
 const TicketForm = ({ title, OnSubmit, ticket, ticketFiles }) => {
 
-  const [ fileList, setFileList ] = useState([]);
-  const [ deleteFiles, setDeleteFiles ] = useState([]);
+  const [fileList, setFileList] = useState([]);
+  const [deleteFiles, setDeleteFiles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const userId = useSelector(state => state.user._id);
-  
+
   const { data: userOptions } = useQuery({
     queryKey: ["users"],
     queryFn: userApi.readAll
@@ -48,13 +48,13 @@ const TicketForm = ({ title, OnSubmit, ticket, ticketFiles }) => {
     multiple: true,
     listType: "picture",
     maxCount: 2,
-    fileList ,
+    fileList,
     beforeUpload: (file) => {
-      if (!file.size > 2 * 1024 * 1024) {
-        message.error(`${file.name} must smaller than 2MB!`);
-        return Upload.LIST_IGNORE;
+      if (file.size < (2 * 1024 * 1024)) {
+        return false;
       }
-      return false;
+      message.error(`${file.name} must smaller than 2MB!`);
+      return Upload.LIST_IGNORE;
     },
     onChange: ({ fileList: newFileList }) => {
       setFileList(newFileList)

@@ -45,7 +45,6 @@ const Header = () => {
       onClick: () => {
         userApi.logout();
         dispatch({ type: "LOGOUT_SUCCESS" })
-        window.location = '/';
       },
       className:'navbar-logout'
     },

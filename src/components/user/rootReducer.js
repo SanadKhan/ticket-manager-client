@@ -2,7 +2,7 @@ const rootReducerDefaultState = {
     isAuthUser: !!(localStorage.getItem('auth-token')),
     user: JSON.parse(localStorage.getItem('user')) || null,
     // user: localStorage.getItem('user') || null
-    perPage: 5
+    perPage: 10
 };
 
 export default (state = rootReducerDefaultState, action) => {

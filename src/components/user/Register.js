@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, message } from 'antd';
 import { useDispatch } from "react-redux";
 import { passwordValidator, textFieldValidator, validateEmail } from "../../utils/helper";
 import { useMutation } from "react-query";
@@ -13,6 +13,11 @@ const Register = () => {
     mutationFn: userApi.create,
     onSuccess: data => {
       dispatch({ type: "LOGIN_SUCCESS", payload: data });
+    },
+    onError: err => {
+      if (err.response.data.msgText) {
+        message.error(err.response.data.msgText)
+      }
     }
   })
   
